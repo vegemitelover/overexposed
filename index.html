@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overexposed - snowchild</title>
+<style>
+  /* Reset & basic */
+  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
+  body { background: #0a0a0a; color: #fff; text-align:center; overflow-x:hidden; }
+
+  /* Hero Section */
+  .hero {
+    padding: 80px 20px;
+    background: radial-gradient(circle at center, #ff00ff33, #000);
+    animation: pulse 2s infinite alternate;
+  }
+  .hero img {
+    width: 220px;
+    max-width: 60%;
+    border-radius: 12px;
+    box-shadow: 0 0 30px #ff00ff;
+    transition: transform 0.3s;
+  }
+  .hero img:hover {
+    transform: scale(1.05) rotate(-1deg);
+  }
+  .hero h1 {
+    margin: 20px 0 10px;
+    font-size: 2.5em;
+    color: #ff00ff;
+    text-shadow: 0 0 8px #ff00ff;
+  }
+  .hero p {
+    font-size: 1.1em;
+    color: #fff;
+  }
+  @keyframes pulse {
+    0% { background: radial-gradient(circle at center, #ff00ff33, #000); }
+    100% { background: radial-gradient(circle at center, #ff00ff77, #000); }
+  }
+
+  /* Streaming Links */
+  .links {
+    margin: 40px 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .links a {
+    padding: 16px 28px;
+    background: #ff00ff;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: 0.3s;
+  }
+  .links a:hover {
+    background: #fff;
+    color: #ff00ff;
+    transform: scale(1.1);
+  }
+
+  /* Game Section */
+  .game {
+    margin: 50px auto;
+    max-width: 420px;
+    padding: 20px;
+    border: 2px solid #ff00ff;
+    border-radius: 12px;
+    background: #111;
+  }
+  .game h2 {
+    margin-bottom: 20px;
+    color: #ff00ff;
+    text-shadow: 0 0 6px #ff00ff;
+  }
+  .square-container {
+    display: grid;
+    grid-template-columns: repeat(3, 90px);
+    grid-gap: 10px;
+    justify-content: center;
+  }
+  .square {
+    width: 90px;
+    height: 90px;
+    background: #222;
+    border: 2px solid #ff00ff;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .square.active {
+    background: #ff00ff;
+    transform: scale(1.2) rotate(2deg);
+    box-shadow: 0 0 15px #ff00ff;
+  }
+  #game-message {
+    margin-top: 15px;
+    font-size: 1em;
+    color: #fff;
+  }
+
+  /* Footer */
+  footer {
+    margin: 60px 0 20px;
+    font-size: 0.85em;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <img src="cover.jpg" alt="Overexposed EP Cover">
+  <h1>Overexposed</h1>
+  <p>Out April 3rd. Experience it loud, feel it raw.</p>
+</div>
+
+<div class="links">
+  <a href="https://open.spotify.com/..." target="_blank">Spotify</a>
+  <a href="https://music.apple.com/..." target="_blank">Apple Music</a>
+  <a href="https://tidal.com/..." target="_blank">Tidal</a>
+</div>
+
+<div class="game">
+  <h2>Catch the Glare!</h2>
+  <p>Click the flashing square as fast as you can—just like the chaos in Overexposed.</p>
+  <div class="square-container">
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+  </div>
+  <p id="game-message">Click a square to start!</p>
+</div>
+
+<footer>
+  &copy; 2026 snowchild. All Rights Reserved.
+</footer>
+
+<script>
+  const squares = document.querySelectorAll('.square');
+  const message = document.getElementById('game-message');
+
+  function activateRandom() {
+    squares.forEach(s => s.classList.remove('active'));
+    const rand = Math.floor(Math.random() * squares.length);
+    squares[rand].classList.add('active');
+    message.textContent = "Click the flashing square!";
+  }
+
+  squares.forEach(s => {
+    s.addEventListener('click', () => {
+      if (s.classList.contains('active')) {
+        message.textContent = "You caught it! Keep going!";
+        activateRandom();
+      } else {
+        message.textContent = "Missed! Try again!";
+      }
+    });
+  });
+
+  // Game auto-start
+  activateRandom();
+  // Optional: Flash new square every 2 seconds automatically
+  setInterval(() => { activateRandom(); }, 2000);
+</script>
+
+</body>
+</html>
