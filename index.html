@@ -4,41 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Overexposed - snowchild</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
 <style>
   /* Reset & basic */
-  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
-  body { background: #0a0a0a; color: #fff; text-align:center; overflow-x:hidden; }
+  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Poppins', sans-serif; }
+  body { background: #000; color: #fff; text-align:center; overflow-x:hidden; }
 
   /* Hero Section */
   .hero {
-    padding: 80px 20px;
-    background: radial-gradient(circle at center, #ff00ff33, #000);
-    animation: pulse 2s infinite alternate;
+    padding: 100px 20px;
+    background: linear-gradient(135deg, #ff6e40, #89c2d9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
   .hero img {
     width: 220px;
-    max-width: 60%;
+    max-width: 50%;
     border-radius: 12px;
-    box-shadow: 0 0 30px #ff00ff;
+    box-shadow: 0 0 35px #ff6e40, 0 0 50px #89c2d9;
     transition: transform 0.3s;
   }
-  .hero img:hover {
-    transform: scale(1.05) rotate(-1deg);
-  }
+  .hero img:hover { transform: scale(1.05) rotate(-1deg); }
   .hero h1 {
     margin: 20px 0 10px;
-    font-size: 2.5em;
-    color: #ff00ff;
-    text-shadow: 0 0 8px #ff00ff;
-  }
-  .hero p {
-    font-size: 1.1em;
+    font-size: 3em;
     color: #fff;
+    text-shadow: 0 0 10px #ff6e40, 0 0 20px #89c2d9;
   }
-  @keyframes pulse {
-    0% { background: radial-gradient(circle at center, #ff00ff33, #000); }
-    100% { background: radial-gradient(circle at center, #ff00ff77, #000); }
-  }
+  .hero p { font-size: 1.2em; color: #fff; }
 
   /* Streaming Links */
   .links {
@@ -50,57 +45,66 @@
   }
   .links a {
     padding: 16px 28px;
-    background: #ff00ff;
-    color: #000;
+    background: #000;
+    color: #fff;
     font-weight: bold;
     text-decoration: none;
     border-radius: 10px;
+    border: 2px solid #ff6e40;
     transition: 0.3s;
   }
   .links a:hover {
-    background: #fff;
-    color: #ff00ff;
+    background: #ff6e40;
+    color: #000;
     transform: scale(1.1);
   }
 
-  /* Game Section */
-  .game {
-    margin: 50px auto;
-    max-width: 420px;
-    padding: 20px;
-    border: 2px solid #ff00ff;
+  /* Section Titles */
+  h2 { margin-bottom: 15px; color: #ff6e40; font-size: 2em; text-shadow: 0 0 8px #ff6e40; }
+
+  /* Flash Warning */
+  .warning { color: #ff6e40; font-weight: bold; margin-bottom: 15px; }
+
+  /* Memory Game */
+  .memory-game {
+    margin: 40px auto;
+    max-width: 400px;
+    padding: 25px;
+    border: 2px solid #ff6e40;
     border-radius: 12px;
     background: #111;
   }
-  .game h2 {
-    margin-bottom: 20px;
-    color: #ff00ff;
-    text-shadow: 0 0 6px #ff00ff;
-  }
-  .square-container {
+  .memory-grid {
     display: grid;
     grid-template-columns: repeat(3, 90px);
-    grid-gap: 10px;
+    grid-gap: 12px;
     justify-content: center;
   }
-  .square {
+  .memory-square {
     width: 90px;
     height: 90px;
     background: #222;
-    border: 2px solid #ff00ff;
+    border: 2px solid #ff6e40;
     cursor: pointer;
     transition: 0.2s;
   }
-  .square.active {
-    background: #ff00ff;
+  .memory-square.active {
+    background: #ff6e40;
+    box-shadow: 0 0 15px #ff6e40, 0 0 25px #89c2d9;
     transform: scale(1.2) rotate(2deg);
-    box-shadow: 0 0 15px #ff00ff;
   }
-  #game-message {
-    margin-top: 15px;
-    font-size: 1em;
-    color: #fff;
+  #memory-message { margin-top: 15px; color: #fff; font-weight: bold; }
+
+  /* Car Game */
+  .car-game {
+    margin: 50px auto;
+    max-width: 420px;
+    padding: 20px;
+    border: 2px solid #89c2d9;
+    border-radius: 12px;
+    background: #111;
   }
+  canvas { display: block; margin: 0 auto; background: #000; border: 2px solid #89c2d9; }
 
   /* Footer */
   footer {
@@ -115,7 +119,7 @@
 <div class="hero">
   <img src="cover.jpg" alt="Overexposed EP Cover">
   <h1>Overexposed</h1>
-  <p>Out April 3rd. Experience it loud, feel it raw.</p>
+  <p>Experience it. Catch the moments.</p>
 </div>
 
 <div class="links">
@@ -124,21 +128,29 @@
   <a href="https://tidal.com/..." target="_blank">Tidal</a>
 </div>
 
-<div class="game">
-  <h2>Catch the Glare!</h2>
-  <p>Click the flashing square as fast as you can—just like the chaos in Overexposed.</p>
-  <div class="square-container">
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
-    <div class="square"></div>
+<!-- Memory Game Section -->
+<div class="memory-game">
+  <h2>Strobe Memory Game</h2>
+  <p class="warning">⚠️ Flashing lights! Viewer discretion advised.</p>
+  <div class="memory-grid">
+    <div class="memory-square"></div>
+    <div class="memory-square"></div>
+    <div class="memory-square"></div>
+    <div class="memory-square"></div>
+    <div class="memory-square"></div>
+    <div class="memory-square"></div>
+    <div class="memory-square"></div>
+    <div class="memory-square"></div>
+    <div class="memory-square"></div>
   </div>
-  <p id="game-message">Click a square to start!</p>
+  <p id="memory-message">Click squares in the same sequence!</p>
+</div>
+
+<!-- Car Driving Game Section -->
+<div class="car-game">
+  <h2>8-bit Car Challenge</h2>
+  <canvas id="carCanvas" width="300" height="400"></canvas>
+  <p>Use arrow keys to dodge obstacles!</p>
 </div>
 
 <footer>
@@ -146,31 +158,125 @@
 </footer>
 
 <script>
-  const squares = document.querySelectorAll('.square');
-  const message = document.getElementById('game-message');
+  /******** MEMORY GAME ********/
+  const memSquares = document.querySelectorAll('.memory-square');
+  const memMessage = document.getElementById('memory-message');
+  let sequence = [];
+  let playerSequence = [];
+  let level = 1;
 
-  function activateRandom() {
-    squares.forEach(s => s.classList.remove('active'));
-    const rand = Math.floor(Math.random() * squares.length);
-    squares[rand].classList.add('active');
-    message.textContent = "Click the flashing square!";
+  function flashSequence() {
+    playerSequence = [];
+    memMessage.textContent = `Level ${level}: Watch the sequence!`;
+    let i = 0;
+    const interval = setInterval(() => {
+      memSquares.forEach(s => s.classList.remove('active'));
+      if (i < sequence.length) {
+        memSquares[sequence[i]].classList.add('active');
+        i++;
+      } else {
+        clearInterval(interval);
+        memMessage.textContent = `Your turn! Repeat the sequence.`;
+      }
+    }, 600);
   }
 
-  squares.forEach(s => {
-    s.addEventListener('click', () => {
-      if (s.classList.contains('active')) {
-        message.textContent = "You caught it! Keep going!";
-        activateRandom();
-      } else {
-        message.textContent = "Missed! Try again!";
+  function nextLevel() {
+    const rand = Math.floor(Math.random() * memSquares.length);
+    sequence.push(rand);
+    flashSequence();
+    level++;
+  }
+
+  memSquares.forEach((sq, idx) => {
+    sq.addEventListener('click', () => {
+      if (!sequence.length) return;
+      playerSequence.push(idx);
+      sq.classList.add('active');
+      setTimeout(() => sq.classList.remove('active'), 300);
+
+      for (let i = 0; i < playerSequence.length; i++) {
+        if (playerSequence[i] !== sequence[i]) {
+          memMessage.textContent = `Wrong! Game reset.`;
+          sequence = [];
+          level = 1;
+          setTimeout(nextLevel, 1000);
+          return;
+        }
+      }
+      if (playerSequence.length === sequence.length) {
+        memMessage.textContent = `Good job! Next level.`;
+        setTimeout(nextLevel, 1000);
       }
     });
   });
 
-  // Game auto-start
-  activateRandom();
-  // Optional: Flash new square every 2 seconds automatically
-  setInterval(() => { activateRandom(); }, 2000);
+  nextLevel();
+
+  /******** 8-BIT CAR GAME ********/
+  const canvas = document.getElementById('carCanvas');
+  const ctx = canvas.getContext('2d');
+  const carWidth = 30, carHeight = 50;
+  let carX = canvas.width/2 - carWidth/2;
+  let carY = canvas.height - carHeight - 10;
+  let obstacles = [];
+  let score = 0;
+  let leftPressed = false;
+  let rightPressed = false;
+
+  document.addEventListener('keydown', e => { if(e.key==='ArrowLeft') leftPressed=true; if(e.key==='ArrowRight') rightPressed=true; });
+  document.addEventListener('keyup', e => { if(e.key==='ArrowLeft') leftPressed=false; if(e.key==='ArrowRight') rightPressed=false; });
+
+  function drawCar() {
+    ctx.fillStyle = '#ff6e40';
+    ctx.fillRect(carX, carY, carWidth, carHeight);
+  }
+
+  function drawObstacles() {
+    ctx.fillStyle = '#89c2d9';
+    obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.w, obs.h));
+  }
+
+  function updateObstacles() {
+    obstacles.forEach(obs => obs.y += 4);
+    obstacles = obstacles.filter(obs => obs.y < canvas.height);
+    if(Math.random() < 0.02) {
+      const width = 50 + Math.random()*50;
+      obstacles.push({x: Math.random()*(canvas.width-width), y: -50, w: width, h: 20});
+    }
+  }
+
+  function collision() {
+    for(let obs of obstacles) {
+      if(carX < obs.x+obs.w && carX+carWidth > obs.x && carY < obs.y+obs.h && carY+carHeight > obs.y) {
+        score=0; obstacles=[]; // reset game
+      }
+    }
+  }
+
+  function moveCar() {
+    if(leftPressed && carX>0) carX -=5;
+    if(rightPressed && carX+carWidth<canvas.width) carX +=5;
+  }
+
+  function drawScore() {
+    ctx.fillStyle = '#fff';
+    ctx.font = '16px Poppins';
+    ctx.fillText(`Score: ${score}`, 10, 20);
+  }
+
+  function gameLoop() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    moveCar();
+    updateObstacles();
+    collision();
+    drawCar();
+    drawObstacles();
+    drawScore();
+    score++;
+    requestAnimationFrame(gameLoop);
+  }
+  gameLoop();
 </script>
 
 </body>
