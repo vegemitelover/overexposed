@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,134 +6,156 @@
 <title>overexposed</title>
 <link rel="icon" href="favicon.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
-<style>
-/* Reset & Base */
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: 'Chivo', sans-serif; background:#fff; color:#000; text-align:center; overflow-x:hidden; user-select:none; text-transform: lowercase; -webkit-font-smoothing: none; }
 
-/* Pixelated Text Effect */
-h1, h2, p, .file { 
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Chivo', sans-serif;
+  background:#fff;
+  color:#000;
+  text-align:center;
+  overflow-x:hidden;
+  user-select:none;
+  text-transform: lowercase;
+  -webkit-font-smoothing: none;
+}
+
+/* pixel text */
+h1, h2, p, .file {
   text-shadow:
     1px 0 #000,
     0 1px #000,
     1px 1px #000;
-  -webkit-font-smoothing: none;
 }
 
-/* Hero Section */
+/* hero */
 .hero {
-  padding: 80px 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding:60px 20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
+
 .hero img {
-  width: 220px;
-  max-width: 50%;
-  border-radius: 8px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.2);
-  transition: transform 0.3s;
+  width:180px;
+  max-width:70%;
+  border-radius:8px;
+  box-shadow:0 0 20px rgba(0,0,0,0.2);
 }
-.hero img:hover { transform: scale(1.05); }
+
 .hero h1 {
-  margin: 30px 0 10px;
-  font-size: 3.5em;
-  font-weight: 900;
-  letter-spacing: 2px;
+  margin:25px 0 10px;
+  font-size:2.8em;
+  font-weight:900;
 }
-.hero p { font-size:1.2em; font-weight:700; opacity:0.8; max-width:400px; }
 
-/* Pixelated Black Folders */
+.hero p {
+  font-size:1em;
+  max-width:300px;
+}
+
+/* files area */
 .files-container {
-  position: relative;
-  width: 100%;
-  height: 600px;
-  margin-top: 50px;
+  position:relative;
+  width:100%;
+  height:500px;
+  margin-top:40px;
 }
+
+/* folders */
 .file {
-  width: 140px;
-  padding: 15px;
-  background: #000;
-  border: 2px solid #000;
-  border-radius: 2px;
-  position: absolute;
-  cursor: grab;
-  font-weight: 700;
-  color: #fff;
-  font-size: 0.95em;
-  text-align: center;
-  box-shadow: 2px 2px 0 #000;
-  transition: transform 0.2s, box-shadow 0.2s;
+  width:130px;
+  padding:15px;
+  background:#000;
+  color:#fff;
+  position:absolute;
+  cursor:grab;
+  font-weight:700;
+  font-size:0.9em;
+  box-shadow:3px 3px 0 #000;
+  transition:transform 0.15s;
 }
+
 .file:active {
-  cursor: grabbing;
-  transform: scale(1.05);
-  z-index: 999;
+  cursor:grabbing;
+  transform:scale(1.05);
+  z-index:999;
 }
-.linktree-file a { color:#fff; text-decoration:none; }
-.linktree-file a:hover { opacity:0.7; }
 
-/* Section Titles */
-h2 { margin-bottom: 15px; font-size:2em; font-weight:900; }
-
-/* Memory Game */
-.memory-game {
-  margin: 60px auto;
-  max-width: 400px;
-  padding: 25px;
-  border: 1px solid #000;
-  border-radius: 12px;
-  background: #fff;
+/* games */
+.memory-game, .car-game {
+  margin:60px auto;
+  max-width:90%;
+  padding:20px;
+  border:1px solid #000;
+  background:#fff;
 }
-.memory-grid { display: grid; grid-template-columns: repeat(3, 90px); grid-gap:12px; justify-content:center; }
-.memory-square { width:90px; height:90px; background:#eee; border:1px solid #000; cursor:pointer; transition: all 0.2s; }
-.memory-square.active { background:#000; transform: scale(1.1); }
-.warning { font-weight:700; margin-bottom:15px; opacity:0.8; }
-#memory-message { margin-top:15px; font-weight:700; opacity:0.8; }
 
-/* Car Game */
-.car-game {
-  margin: 60px auto;
-  max-width: 420px;
-  padding: 20px;
-  border: 1px solid #000;
-  border-radius: 12px;
-  background: #fff;
+.memory-grid {
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:10px;
+  margin-top:15px;
 }
-canvas { display:block; margin:0 auto; background:#eee; border:1px solid #000; }
 
-/* Footer */
-footer { margin:60px 0 20px; font-size:0.85em; color:#444; opacity:0.7; }
+.memory-square {
+  height:70px;
+  background:#eee;
+  border:1px solid #000;
+}
 
+.memory-square.active {
+  background:#000;
+}
+
+canvas {
+  background:#eee;
+  border:1px solid #000;
+  max-width:100%;
+}
+
+/* mobile adjustments */
+@media (max-width:768px) {
+  .files-container {
+    height:400px;
+  }
+
+  .file {
+    width:110px;
+    font-size:0.8em;
+  }
+
+  .hero h1 {
+    font-size:2.2em;
+  }
+}
+
+footer {
+  margin:60px 0 20px;
+  font-size:0.8em;
+  opacity:0.6;
+}
 </style>
 </head>
+
 <body>
 
 <div class="hero">
-  <img src="cover.jpg" alt="overexposed ep cover">
+  <img src="cover.jpg" alt="overexposed cover">
   <h1>overexposed</h1>
   <p>experience it. catch the moments.</p>
 </div>
 
-<!-- Movable Files -->
 <div class="files-container">
-  <div class="file" style="top:30px; left:50px;" id="linktree">
-    <div class="linktree-file">
-      <a href="https://linktr.ee/vegemiteloverr" target="_blank">music</a>
-    </div>
-  </div>
-  <div class="file" style="top:150px; left:350px;" id="memory-game-file">
-    <div>memory game</div>
-  </div>
-  <div class="file" style="top:80px; left:600px;" id="car-game-file">
-    <div>car challenge</div>
-  </div>
+  <div class="file" id="music-file" style="top:40px; left:30px;">music</div>
+  <div class="file" id="memory-file" style="top:150px; left:60%;">memory game</div>
+  <div class="file" id="car-file" style="top:80px; left:35%;">car challenge</div>
 </div>
 
-<!-- Memory Game -->
-<div class="memory-game" id="memory-game-section">
+<div class="memory-game" id="memory-section">
   <h2>strobe memory game</h2>
-  <p class="warning">⚠️ flashing lights – viewer discretion advised.</p>
+  <p>flashing lights — viewer discretion advised.</p>
   <div class="memory-grid">
     <div class="memory-square"></div>
     <div class="memory-square"></div>
@@ -145,118 +167,162 @@ footer { margin:60px 0 20px; font-size:0.85em; color:#444; opacity:0.7; }
     <div class="memory-square"></div>
     <div class="memory-square"></div>
   </div>
-  <p id="memory-message">click squares in the same sequence!</p>
+  <p id="memory-message">repeat the sequence</p>
 </div>
 
-<!-- Car Game -->
-<div class="car-game" id="car-game-section">
+<div class="car-game" id="car-section">
   <h2>8-bit car challenge</h2>
   <canvas id="carCanvas" width="300" height="400"></canvas>
-  <p>use arrow keys to dodge obstacles.</p>
+  <p>use arrow keys</p>
 </div>
 
 <footer>
-  &copy; 2026 snowchild. all rights reserved.
+  © 2026 snowchild
 </footer>
 
 <script>
-/******** MOVABLE FILES - fixed drag offset ********/
+/* DRAG SUPPORT (mouse + touch) */
 const files = document.querySelectorAll('.file');
+
 files.forEach(file => {
-  let offsetX = 0, offsetY = 0, isDragging = false;
 
-  file.addEventListener('mousedown', e => {
-    isDragging = true;
-    // exact click offset inside the folder
+  let offsetX = 0, offsetY = 0, dragging = false;
+
+  const startDrag = (clientX, clientY) => {
     const rect = file.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
+    offsetX = clientX - rect.left;
+    offsetY = clientY - rect.top;
+    dragging = true;
     file.style.zIndex = 1000;
-  });
+  };
 
-  document.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    file.style.left = (e.clientX - offsetX) + 'px';
-    file.style.top = (e.clientY - offsetY) + 'px';
-  });
+  const moveDrag = (clientX, clientY) => {
+    if (!dragging) return;
+    file.style.left = (clientX - offsetX) + "px";
+    file.style.top = (clientY - offsetY) + "px";
+  };
 
-  document.addEventListener('mouseup', e => {
-    if (!isDragging) return;
-    isDragging = false;
+  const endDrag = () => {
+    dragging = false;
     file.style.zIndex = 1;
+  };
+
+  file.addEventListener("mousedown", e => startDrag(e.clientX, e.clientY));
+  document.addEventListener("mousemove", e => moveDrag(e.clientX, e.clientY));
+  document.addEventListener("mouseup", endDrag);
+
+  file.addEventListener("touchstart", e => {
+    const touch = e.touches[0];
+    startDrag(touch.clientX, touch.clientY);
   });
 
-  // click scroll
-  if(file.id === "memory-game-file") file.addEventListener('click', () => {
-    document.getElementById("memory-game-section").scrollIntoView({behavior:'smooth'});
+  document.addEventListener("touchmove", e => {
+    const touch = e.touches[0];
+    moveDrag(touch.clientX, touch.clientY);
   });
-  if(file.id === "car-game-file") file.addEventListener('click', () => {
-    document.getElementById("car-game-section").scrollIntoView({behavior:'smooth'});
-  });
+
+  document.addEventListener("touchend", endDrag);
 });
 
-/******** MEMORY GAME ********/
-const memSquares = document.querySelectorAll('.memory-square');
-const memMessage = document.getElementById('memory-message');
-let sequence = [], playerSequence = [], level = 1;
+/* whole music folder clickable */
+document.getElementById("music-file").addEventListener("click", () => {
+  window.open("https://linktr.ee/vegemiteloverr", "_blank");
+});
 
-function flashSequence() {
-  playerSequence = [];
-  memMessage.textContent = `level ${level}: watch the sequence`;
+/* scroll links */
+document.getElementById("memory-file").onclick = () => {
+  document.getElementById("memory-section").scrollIntoView({behavior:"smooth"});
+};
+
+document.getElementById("car-file").onclick = () => {
+  document.getElementById("car-section").scrollIntoView({behavior:"smooth"});
+};
+
+/* memory game */
+const squares = document.querySelectorAll('.memory-square');
+let sequence = [], player = [], level = 1;
+const message = document.getElementById("memory-message");
+
+function flash() {
+  player = [];
+  message.textContent = "level " + level;
   let i = 0;
   const interval = setInterval(() => {
-    memSquares.forEach(s => s.classList.remove('active'));
-    if (i < sequence.length) { memSquares[sequence[i]].classList.add('active'); i++; } 
-    else { clearInterval(interval); memMessage.textContent = `your turn! repeat the sequence.`; }
-  }, 600);
+    squares.forEach(s => s.classList.remove("active"));
+    if (i < sequence.length) {
+      squares[sequence[i]].classList.add("active");
+      i++;
+    } else {
+      clearInterval(interval);
+      message.textContent = "your turn";
+    }
+  }, 500);
 }
 
 function nextLevel() {
-  const rand = Math.floor(Math.random() * memSquares.length);
-  sequence.push(rand);
-  flashSequence();
+  sequence.push(Math.floor(Math.random() * 9));
+  flash();
   level++;
 }
 
-memSquares.forEach((sq, idx) => {
-  sq.addEventListener('click', () => {
-    if(!sequence.length) return;
-    playerSequence.push(idx);
-    sq.classList.add('active');
-    setTimeout(() => sq.classList.remove('active'), 300);
-    for(let i=0;i<playerSequence.length;i++){ 
-      if(playerSequence[i]!==sequence[i]){ 
-        memMessage.textContent="wrong! restarting..."; 
-        sequence=[]; level=1; 
-        setTimeout(nextLevel,1000); 
-        return; 
-      } 
+squares.forEach((sq, i) => {
+  sq.onclick = () => {
+    player.push(i);
+    if (player[player.length - 1] !== sequence[player.length - 1]) {
+      message.textContent = "wrong";
+      sequence = [];
+      level = 1;
+      setTimeout(nextLevel, 1000);
+      return;
     }
-    if(playerSequence.length===sequence.length){ 
-      memMessage.textContent="good! next level."; 
-      setTimeout(nextLevel,1000); 
+    if (player.length === sequence.length) {
+      setTimeout(nextLevel, 800);
     }
-  });
+  };
 });
+
 nextLevel();
 
-/******** CAR GAME ********/
-const canvas = document.getElementById('carCanvas');
-const ctx = canvas.getContext('2d');
-const carWidth=30, carHeight=50;
-let carX=canvas.width/2 - carWidth/2, carY=canvas.height - carHeight -10;
-let obstacles=[], score=0, leftPressed=false, rightPressed=false;
-document.addEventListener('keydown', e => { if(e.key==='ArrowLeft') leftPressed=true; if(e.key==='ArrowRight') rightPressed=true; });
-document.addEventListener('keyup', e => { if(e.key==='ArrowLeft') leftPressed=false; if(e.key==='ArrowRight') rightPressed=false; });
+/* car game */
+const canvas = document.getElementById("carCanvas");
+const ctx = canvas.getContext("2d");
+let carX = 130, obstacles = [], score = 0;
+let left = false, right = false;
 
-function drawCar(){ ctx.fillStyle='#000'; ctx.fillRect(carX, carY, carWidth, carHeight); }
-function drawObstacles(){ ctx.fillStyle='#000'; obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.w, obs.h)); }
-function updateObstacles(){ obstacles.forEach(obs=>obs.y+=4); obstacles=obstacles.filter(obs=>obs.y<canvas.height); if(Math.random()<0.02){const width=50+Math.random()*50; obstacles.push({x:Math.random()*(canvas.width-width),y:-50,w:width,h:20}); } }
-function collision(){ for(let obs of obstacles){ if(carX<obs.x+obs.w && carX+carWidth>obs.x && carY<obs.y+obs.h && carY+carHeight>obs.y){ score=0; obstacles=[]; } } }
-function moveCar(){ if(leftPressed && carX>0) carX-=5; if(rightPressed && carX+carWidth<canvas.width) carX+=5; }
-function drawScore(){ ctx.fillStyle='#000'; ctx.font='16px Chivo'; ctx.fillText(`score: ${score}`,10,20); }
-function gameLoop(){ ctx.clearRect(0,0,canvas.width,canvas.height); moveCar(); updateObstacles(); collision(); drawCar(); drawObstacles(); drawScore(); score++; requestAnimationFrame(gameLoop); }
-gameLoop();
+document.addEventListener("keydown", e => {
+  if(e.key==="ArrowLeft") left=true;
+  if(e.key==="ArrowRight") right=true;
+});
+document.addEventListener("keyup", e => {
+  if(e.key==="ArrowLeft") left=false;
+  if(e.key==="ArrowRight") right=false;
+});
+
+function loop(){
+  ctx.clearRect(0,0,300,400);
+  if(left && carX>0) carX-=5;
+  if(right && carX<260) carX+=5;
+
+  ctx.fillStyle="#000";
+  ctx.fillRect(carX,350,40,40);
+
+  if(Math.random()<0.02){
+    obstacles.push({x:Math.random()*260,y:0});
+  }
+
+  obstacles.forEach(o=>{
+    o.y+=4;
+    ctx.fillRect(o.x,o.y,40,20);
+  });
+
+  obstacles=obstacles.filter(o=>o.y<400);
+
+  ctx.fillText("score "+score,10,20);
+  score++;
+  requestAnimationFrame(loop);
+}
+loop();
 </script>
+
 </body>
 </html>
