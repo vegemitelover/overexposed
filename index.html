@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -11,25 +11,20 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 
 body {
-  font-family: 'Chivo', sans-serif;
+  font-family:'Chivo', sans-serif;
   background:#fff;
   color:#000;
   text-align:center;
   overflow-x:hidden;
   user-select:none;
-  text-transform: lowercase;
-  -webkit-font-smoothing: none;
+  text-transform:lowercase;
+  -webkit-font-smoothing:none;
 }
 
-/* pixel text */
 h1, h2, p, .file {
-  text-shadow:
-    1px 0 #000,
-    0 1px #000,
-    1px 1px #000;
+  text-shadow:1px 0 #000, 0 1px #000;
 }
 
-/* hero */
 .hero {
   padding:60px 20px;
   display:flex;
@@ -46,26 +41,19 @@ h1, h2, p, .file {
 
 .hero h1 {
   margin:25px 0 10px;
-  font-size:2.8em;
+  font-size:2.5em;
   font-weight:900;
 }
 
-.hero p {
-  font-size:1em;
-  max-width:300px;
-}
-
-/* files area */
 .files-container {
   position:relative;
   width:100%;
-  height:500px;
+  height:450px;
   margin-top:40px;
 }
 
-/* folders */
 .file {
-  width:130px;
+  width:120px;
   padding:15px;
   background:#000;
   color:#fff;
@@ -74,7 +62,6 @@ h1, h2, p, .file {
   font-weight:700;
   font-size:0.9em;
   box-shadow:3px 3px 0 #000;
-  transition:transform 0.15s;
 }
 
 .file:active {
@@ -83,18 +70,16 @@ h1, h2, p, .file {
   z-index:999;
 }
 
-/* games */
 .memory-game, .car-game {
   margin:60px auto;
-  max-width:90%;
+  max-width:95%;
   padding:20px;
   border:1px solid #000;
-  background:#fff;
 }
 
 .memory-grid {
   display:grid;
-  grid-template-columns:repeat(3, 1fr);
+  grid-template-columns:repeat(3,1fr);
   gap:10px;
   margin-top:15px;
 }
@@ -112,29 +97,35 @@ h1, h2, p, .file {
 canvas {
   background:#eee;
   border:1px solid #000;
-  max-width:100%;
+  width:100%;
+  max-width:320px;
+  height:auto;
 }
 
-/* mobile adjustments */
-@media (max-width:768px) {
-  .files-container {
-    height:400px;
-  }
+.controls {
+  margin-top:15px;
+  display:flex;
+  justify-content:center;
+  gap:20px;
+}
 
-  .file {
-    width:110px;
-    font-size:0.8em;
-  }
-
-  .hero h1 {
-    font-size:2.2em;
-  }
+.control-btn {
+  padding:15px 25px;
+  background:#000;
+  color:#fff;
+  font-weight:700;
+  border:none;
 }
 
 footer {
   margin:60px 0 20px;
   font-size:0.8em;
   opacity:0.6;
+}
+
+@media(max-width:768px){
+  .file{width:100px;font-size:0.8em;}
+  .hero h1{font-size:2em;}
 }
 </style>
 </head>
@@ -148,14 +139,14 @@ footer {
 </div>
 
 <div class="files-container">
-  <div class="file" id="music-file" style="top:40px; left:30px;">music</div>
-  <div class="file" id="memory-file" style="top:150px; left:60%;">memory game</div>
-  <div class="file" id="car-file" style="top:80px; left:35%;">car challenge</div>
+  <div class="file" id="music-file" style="top:40px; left:20px;">music</div>
+  <div class="file" id="memory-file" style="top:180px; left:55%;">memory game</div>
+  <div class="file" id="car-file" style="top:90px; left:30%;">car challenge</div>
 </div>
 
 <div class="memory-game" id="memory-section">
   <h2>strobe memory game</h2>
-  <p>flashing lights — viewer discretion advised.</p>
+  <p>flashing lights — viewer discretion advised</p>
   <div class="memory-grid">
     <div class="memory-square"></div>
     <div class="memory-square"></div>
@@ -173,133 +164,133 @@ footer {
 <div class="car-game" id="car-section">
   <h2>8-bit car challenge</h2>
   <canvas id="carCanvas" width="300" height="400"></canvas>
-  <p>use arrow keys</p>
+  <div class="controls">
+    <button class="control-btn" id="leftBtn">left</button>
+    <button class="control-btn" id="rightBtn">right</button>
+  </div>
+  <p>tap buttons or use arrow keys</p>
 </div>
 
 <footer>
-  © 2026 snowchild
+  © 2026 aussie
 </footer>
 
 <script>
-/* DRAG SUPPORT (mouse + touch) */
-const files = document.querySelectorAll('.file');
+/* drag (mobile + desktop) */
+document.querySelectorAll('.file').forEach(file=>{
+  let offsetX, offsetY, dragging=false;
 
-files.forEach(file => {
+  function start(x,y){
+    const rect=file.getBoundingClientRect();
+    offsetX=x-rect.left;
+    offsetY=y-rect.top;
+    dragging=true;
+    file.style.zIndex=999;
+  }
 
-  let offsetX = 0, offsetY = 0, dragging = false;
+  function move(x,y){
+    if(!dragging) return;
+    file.style.left=(x-offsetX)+"px";
+    file.style.top=(y-offsetY)+"px";
+  }
 
-  const startDrag = (clientX, clientY) => {
-    const rect = file.getBoundingClientRect();
-    offsetX = clientX - rect.left;
-    offsetY = clientY - rect.top;
-    dragging = true;
-    file.style.zIndex = 1000;
-  };
+  function end(){dragging=false;}
 
-  const moveDrag = (clientX, clientY) => {
-    if (!dragging) return;
-    file.style.left = (clientX - offsetX) + "px";
-    file.style.top = (clientY - offsetY) + "px";
-  };
+  file.addEventListener("mousedown",e=>start(e.clientX,e.clientY));
+  document.addEventListener("mousemove",e=>move(e.clientX,e.clientY));
+  document.addEventListener("mouseup",end);
 
-  const endDrag = () => {
-    dragging = false;
-    file.style.zIndex = 1;
-  };
-
-  file.addEventListener("mousedown", e => startDrag(e.clientX, e.clientY));
-  document.addEventListener("mousemove", e => moveDrag(e.clientX, e.clientY));
-  document.addEventListener("mouseup", endDrag);
-
-  file.addEventListener("touchstart", e => {
-    const touch = e.touches[0];
-    startDrag(touch.clientX, touch.clientY);
+  file.addEventListener("touchstart",e=>{
+    const t=e.touches[0];
+    start(t.clientX,t.clientY);
   });
-
-  document.addEventListener("touchmove", e => {
-    const touch = e.touches[0];
-    moveDrag(touch.clientX, touch.clientY);
+  document.addEventListener("touchmove",e=>{
+    const t=e.touches[0];
+    move(t.clientX,t.clientY);
   });
-
-  document.addEventListener("touchend", endDrag);
+  document.addEventListener("touchend",end);
 });
 
-/* whole music folder clickable */
-document.getElementById("music-file").addEventListener("click", () => {
-  window.open("https://linktr.ee/vegemiteloverr", "_blank");
-});
-
-/* scroll links */
-document.getElementById("memory-file").onclick = () => {
+/* links */
+document.getElementById("music-file").onclick=()=>{
+  window.open("https://linktr.ee/vegemiteloverr","_blank");
+};
+document.getElementById("memory-file").onclick=()=>{
   document.getElementById("memory-section").scrollIntoView({behavior:"smooth"});
 };
-
-document.getElementById("car-file").onclick = () => {
+document.getElementById("car-file").onclick=()=>{
   document.getElementById("car-section").scrollIntoView({behavior:"smooth"});
 };
 
 /* memory game */
-const squares = document.querySelectorAll('.memory-square');
-let sequence = [], player = [], level = 1;
-const message = document.getElementById("memory-message");
+const squares=document.querySelectorAll('.memory-square');
+let sequence=[],player=[],level=1;
+const msg=document.getElementById("memory-message");
 
-function flash() {
-  player = [];
-  message.textContent = "level " + level;
-  let i = 0;
-  const interval = setInterval(() => {
-    squares.forEach(s => s.classList.remove("active"));
-    if (i < sequence.length) {
+function flash(){
+  player=[];
+  msg.textContent="level "+level;
+  let i=0;
+  const int=setInterval(()=>{
+    squares.forEach(s=>s.classList.remove("active"));
+    if(i<sequence.length){
       squares[sequence[i]].classList.add("active");
       i++;
     } else {
-      clearInterval(interval);
-      message.textContent = "your turn";
+      clearInterval(int);
+      msg.textContent="your turn";
     }
-  }, 500);
+  },500);
 }
 
-function nextLevel() {
-  sequence.push(Math.floor(Math.random() * 9));
+function next(){
+  sequence.push(Math.floor(Math.random()*9));
   flash();
   level++;
 }
 
-squares.forEach((sq, i) => {
-  sq.onclick = () => {
-    player.push(i);
-    if (player[player.length - 1] !== sequence[player.length - 1]) {
-      message.textContent = "wrong";
-      sequence = [];
-      level = 1;
-      setTimeout(nextLevel, 1000);
-      return;
-    }
-    if (player.length === sequence.length) {
-      setTimeout(nextLevel, 800);
-    }
-  };
+squares.forEach((sq,i)=>{
+  sq.addEventListener("click",()=>handle(i));
+  sq.addEventListener("touchstart",()=>handle(i));
 });
 
-nextLevel();
+function handle(i){
+  player.push(i);
+  if(player[player.length-1]!==sequence[player.length-1]){
+    msg.textContent="wrong";
+    sequence=[];level=1;
+    setTimeout(next,1000);
+    return;
+  }
+  if(player.length===sequence.length){
+    setTimeout(next,800);
+  }
+}
+next();
 
 /* car game */
-const canvas = document.getElementById("carCanvas");
-const ctx = canvas.getContext("2d");
-let carX = 130, obstacles = [], score = 0;
-let left = false, right = false;
+const canvas=document.getElementById("carCanvas");
+const ctx=canvas.getContext("2d");
+let carX=130, obstacles=[], score=0;
+let left=false,right=false;
 
-document.addEventListener("keydown", e => {
+document.addEventListener("keydown",e=>{
   if(e.key==="ArrowLeft") left=true;
   if(e.key==="ArrowRight") right=true;
 });
-document.addEventListener("keyup", e => {
+document.addEventListener("keyup",e=>{
   if(e.key==="ArrowLeft") left=false;
   if(e.key==="ArrowRight") right=false;
 });
 
+document.getElementById("leftBtn").addEventListener("touchstart",()=>left=true);
+document.getElementById("leftBtn").addEventListener("touchend",()=>left=false);
+document.getElementById("rightBtn").addEventListener("touchstart",()=>right=true);
+document.getElementById("rightBtn").addEventListener("touchend",()=>right=false);
+
 function loop(){
   ctx.clearRect(0,0,300,400);
+
   if(left && carX>0) carX-=5;
   if(right && carX<260) carX+=5;
 
