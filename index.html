@@ -1,183 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>overexposed</title>
-<link rel="icon" href="favicon.png" type="image/png">
-<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
-
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-
-body {
-  font-family:'Chivo', sans-serif;
-  background:#fff;
-  color:#000;
-  text-align:center;
-  overflow-x:hidden;
-  user-select:none;
-  text-transform:lowercase;
-  -webkit-font-smoothing:none;
-}
-
-h1, h2, p, .file {
-  text-shadow:1px 0 #000, 0 1px #000;
-}
-
-.hero {
-  padding:60px 20px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-}
-
-.hero img {
-  width:180px;
-  max-width:70%;
-  border-radius:8px;
-  box-shadow:0 0 20px rgba(0,0,0,0.2);
-}
-
-.hero h1 {
-  margin:25px 0 10px;
-  font-size:2.5em;
-  font-weight:900;
-}
-
-/* folder area */
-.files-container {
-  position:relative;
-  width:100%;
-  height:420px;
-  margin-top:40px;
-}
-
-.file {
-  width:120px;
-  padding:15px;
-  background:#000;
-  color:#fff;
-  position:absolute;
-  cursor:grab;
-  font-weight:700;
-  font-size:0.9em;
-  box-shadow:3px 3px 0 #000;
-}
-
-.file:active {
-  cursor:grabbing;
-  transform:scale(1.05);
-  z-index:999;
-}
-
-/* hidden sections */
-.section {
-  display:none;
-  margin:60px auto;
-  max-width:95%;
-  padding:20px;
-  border:1px solid #000;
-}
-
-.memory-grid {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:15px;
-}
-
-.memory-square {
-  height:70px;
-  background:#eee;
-  border:1px solid #000;
-}
-
-.memory-square.active {
-  background:#000;
-}
-
-canvas {
-  background:#eee;
-  border:1px solid #000;
-  width:100%;
-  max-width:320px;
-  height:auto;
-}
-
-.controls {
-  margin-top:15px;
-  display:flex;
-  justify-content:center;
-  gap:20px;
-}
-
-.control-btn {
-  padding:15px 25px;
-  background:#000;
-  color:#fff;
-  font-weight:700;
-  border:none;
-}
-
-footer {
-  margin:60px 0 20px;
-  font-size:0.8em;
-  opacity:0.6;
-}
-
-@media(max-width:768px){
-  .file{width:100px;font-size:0.8em;}
-  .hero h1{font-size:2em;}
-}
-</style>
-</head>
-
-<body>
-
-<div class="hero">
-  <img src="cover.jpg" alt="overexposed cover">
-  <h1>overexposed</h1>
-  <p>experience it. catch the moments.</p>
-</div>
-
-<div class="files-container">
-  <div class="file" id="music-file">music</div>
-  <div class="file" id="memory-file">memory game</div>
-  <div class="file" id="car-file">car challenge</div>
-</div>
-
-<!-- hidden sections -->
-<div class="section" id="memory-section">
-  <h2>strobe memory game</h2>
-  <p>flashing lights — viewer discretion advised</p>
-  <div class="memory-grid">
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-  </div>
-  <p id="memory-message">repeat the sequence</p>
-</div>
-
-<div class="section" id="car-section">
-  <h2>8-bit car challenge</h2>
-  <canvas id="carCanvas" width="300" height="400"></canvas>
-  <div class="controls">
-    <button class="control-btn" id="leftBtn">left</button>
-    <button class="control-btn" id="rightBtn">right</button>
-  </div>
-</div>
-
-<footer>
-  © 2026 aussie
-</footer>
-
 <script>
 
 /* RANDOM SCATTER */
@@ -192,36 +12,37 @@ function scatterFolders(){
     const maxX=containerWidth-file.offsetWidth;
     const maxY=containerHeight-file.offsetHeight;
 
-    const randomX=Math.random()*maxX;
-    const randomY=Math.random()*maxY;
-
-    file.style.left=randomX+"px";
-    file.style.top=randomY+"px";
+    file.style.left=Math.random()*maxX+"px";
+    file.style.top=Math.random()*maxY+"px";
   });
 }
 
 window.onload=scatterFolders;
 
 
-/* DRAG (mobile + desktop) */
+/* DRAG + CLICK DETECTION (mobile safe) */
 document.querySelectorAll('.file').forEach(file=>{
-  let offsetX,offsetY,dragging=false;
+  let offsetX,offsetY,dragging=false,moved=false;
 
   function start(x,y){
     const rect=file.getBoundingClientRect();
     offsetX=x-rect.left;
     offsetY=y-rect.top;
     dragging=true;
+    moved=false;
     file.style.zIndex=999;
   }
 
   function move(x,y){
     if(!dragging) return;
+    moved=true;
     file.style.left=(x-offsetX)+"px";
     file.style.top=(y-offsetY)+"px";
   }
 
-  function end(){dragging=false;}
+  function end(){
+    dragging=false;
+  }
 
   file.addEventListener("mousedown",e=>start(e.clientX,e.clientY));
   document.addEventListener("mousemove",e=>move(e.clientX,e.clientY));
@@ -238,25 +59,50 @@ document.querySelectorAll('.file').forEach(file=>{
   });
 
   document.addEventListener("touchend",end);
+
+  /* CLICK ACTION ONLY IF NOT DRAGGED */
+  file.addEventListener("click",()=>{
+    if(moved) return;
+
+    if(file.id==="music-file"){
+      window.open("https://linktr.ee/vegemiteloverr","_blank");
+    }
+
+    if(file.id==="memory-file"){
+      toggleSection("memory-section");
+    }
+
+    if(file.id==="car-file"){
+      toggleSection("car-section");
+    }
+  });
+
 });
 
 
-/* LINK + SECTION TOGGLE */
-document.getElementById("music-file").onclick=()=>{
-  window.open("https://linktr.ee/vegemiteloverr","_blank");
-};
+/* TOGGLE SECTIONS */
+function toggleSection(id){
+  const section=document.getElementById(id);
+  const memory=document.getElementById("memory-section");
+  const car=document.getElementById("car-section");
 
-document.getElementById("memory-file").onclick=()=>{
-  const sec=document.getElementById("memory-section");
-  sec.style.display="block";
-  sec.scrollIntoView({behavior:"smooth"});
-};
+  /* close other section if switching */
+  if(id==="memory-section" && car.style.display==="block"){
+    car.style.display="none";
+  }
 
-document.getElementById("car-file").onclick=()=>{
-  const sec=document.getElementById("car-section");
-  sec.style.display="block";
-  sec.scrollIntoView({behavior:"smooth"});
-};
+  if(id==="car-section" && memory.style.display==="block"){
+    memory.style.display="none";
+  }
+
+  /* toggle selected */
+  if(section.style.display==="block"){
+    section.style.display="none";
+  } else {
+    section.style.display="block";
+    section.scrollIntoView({behavior:"smooth"});
+  }
+}
 
 
 /* MEMORY GAME */
@@ -306,7 +152,7 @@ function handle(i){
 next();
 
 
-/* CAR GAME */
+/* CAR GAME (mobile controls) */
 const canvas=document.getElementById("carCanvas");
 const ctx=canvas.getContext("2d");
 let carX=130,obstacles=[],score=0;
@@ -344,6 +190,3 @@ function loop(){
 loop();
 
 </script>
-
-</body>
-</html>
