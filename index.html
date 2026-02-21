@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Overexposed</title>
+<title>overexposed</title>
 <link rel="icon" href="favicon.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
 <style>
 /* Reset & Base */
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: 'Chivo', sans-serif; background:#fff; color:#000; text-align:center; overflow-x:hidden; user-select:none; -webkit-font-smoothing: none; }
+body { font-family: 'Chivo', sans-serif; background:#fff; color:#000; text-align:center; overflow-x:hidden; user-select:none; text-transform: lowercase; -webkit-font-smoothing: none; }
 
 /* Pixelated Text Effect */
 h1, h2, p, .file { 
@@ -110,30 +110,30 @@ footer { margin:60px 0 20px; font-size:0.85em; color:#444; opacity:0.7; }
 <body>
 
 <div class="hero">
-  <img src="cover.jpg" alt="Overexposed EP Cover">
-  <h1>OVEREXPOSED</h1>
-  <p>Experience it. Catch the moments.</p>
+  <img src="cover.jpg" alt="overexposed ep cover">
+  <h1>overexposed</h1>
+  <p>experience it. catch the moments.</p>
 </div>
 
 <!-- Movable Files -->
 <div class="files-container">
-  <div class="file" style="top:50px; left:50px;" id="linktree">
+  <div class="file" style="top:30px; left:50px;" id="linktree">
     <div class="linktree-file">
-      <a href="https://linktr.ee/vegemiteloverr" target="_blank">Music</a>
+      <a href="https://linktr.ee/vegemiteloverr" target="_blank">music</a>
     </div>
   </div>
-  <div class="file" style="top:50px; left:250px;" id="memory-game-file">
-    <div>Memory Game</div>
+  <div class="file" style="top:150px; left:350px;" id="memory-game-file">
+    <div>memory game</div>
   </div>
-  <div class="file" style="top:50px; left:450px;" id="car-game-file">
-    <div>Car Challenge</div>
+  <div class="file" style="top:80px; left:600px;" id="car-game-file">
+    <div>car challenge</div>
   </div>
 </div>
 
 <!-- Memory Game -->
 <div class="memory-game" id="memory-game-section">
-  <h2>Strobe Memory Game</h2>
-  <p class="warning">⚠️ Flashing lights – viewer discretion advised.</p>
+  <h2>strobe memory game</h2>
+  <p class="warning">⚠️ flashing lights – viewer discretion advised.</p>
   <div class="memory-grid">
     <div class="memory-square"></div>
     <div class="memory-square"></div>
@@ -145,32 +145,33 @@ footer { margin:60px 0 20px; font-size:0.85em; color:#444; opacity:0.7; }
     <div class="memory-square"></div>
     <div class="memory-square"></div>
   </div>
-  <p id="memory-message">Click squares in the same sequence!</p>
+  <p id="memory-message">click squares in the same sequence!</p>
 </div>
 
 <!-- Car Game -->
 <div class="car-game" id="car-game-section">
-  <h2>8-bit Car Challenge</h2>
+  <h2>8-bit car challenge</h2>
   <canvas id="carCanvas" width="300" height="400"></canvas>
-  <p>Use arrow keys to dodge obstacles.</p>
+  <p>use arrow keys to dodge obstacles.</p>
 </div>
 
 <footer>
-  &copy; 2026 snowchild. All Rights Reserved.
+  &copy; 2026 snowchild. all rights reserved.
 </footer>
 
 <script>
-/******** MOVABLE FILES ********/
+/******** MOVABLE FILES - fixed drag offset ********/
 const files = document.querySelectorAll('.file');
 files.forEach(file => {
-  let offsetX, offsetY;
-  let isDragging = false;
+  let offsetX = 0, offsetY = 0, isDragging = false;
 
   file.addEventListener('mousedown', e => {
     isDragging = true;
-    offsetX = e.clientX - file.getBoundingClientRect().left;
-    offsetY = e.clientY - file.getBoundingClientRect().top;
-    file.style.zIndex = 1000; // bring to front
+    // exact click offset inside the folder
+    const rect = file.getBoundingClientRect();
+    offsetX = e.clientX - rect.left;
+    offsetY = e.clientY - rect.top;
+    file.style.zIndex = 1000;
   });
 
   document.addEventListener('mousemove', e => {
@@ -182,10 +183,10 @@ files.forEach(file => {
   document.addEventListener('mouseup', e => {
     if (!isDragging) return;
     isDragging = false;
-    file.style.zIndex = 1; // reset z-index
+    file.style.zIndex = 1;
   });
 
-  // Click scroll functionality
+  // click scroll
   if(file.id === "memory-game-file") file.addEventListener('click', () => {
     document.getElementById("memory-game-section").scrollIntoView({behavior:'smooth'});
   });
@@ -197,18 +198,16 @@ files.forEach(file => {
 /******** MEMORY GAME ********/
 const memSquares = document.querySelectorAll('.memory-square');
 const memMessage = document.getElementById('memory-message');
-let sequence = [];
-let playerSequence = [];
-let level = 1;
+let sequence = [], playerSequence = [], level = 1;
 
 function flashSequence() {
   playerSequence = [];
-  memMessage.textContent = `Level ${level}: Watch the sequence`;
+  memMessage.textContent = `level ${level}: watch the sequence`;
   let i = 0;
   const interval = setInterval(() => {
     memSquares.forEach(s => s.classList.remove('active'));
     if (i < sequence.length) { memSquares[sequence[i]].classList.add('active'); i++; } 
-    else { clearInterval(interval); memMessage.textContent = `Your turn! Repeat the sequence.`; }
+    else { clearInterval(interval); memMessage.textContent = `your turn! repeat the sequence.`; }
   }, 600);
 }
 
@@ -227,19 +226,18 @@ memSquares.forEach((sq, idx) => {
     setTimeout(() => sq.classList.remove('active'), 300);
     for(let i=0;i<playerSequence.length;i++){ 
       if(playerSequence[i]!==sequence[i]){ 
-        memMessage.textContent="Wrong! Restarting..."; 
+        memMessage.textContent="wrong! restarting..."; 
         sequence=[]; level=1; 
         setTimeout(nextLevel,1000); 
         return; 
       } 
     }
     if(playerSequence.length===sequence.length){ 
-      memMessage.textContent="Good! Next level."; 
+      memMessage.textContent="good! next level."; 
       setTimeout(nextLevel,1000); 
     }
   });
 });
-
 nextLevel();
 
 /******** CAR GAME ********/
@@ -256,7 +254,7 @@ function drawObstacles(){ ctx.fillStyle='#000'; obstacles.forEach(obs => ctx.fil
 function updateObstacles(){ obstacles.forEach(obs=>obs.y+=4); obstacles=obstacles.filter(obs=>obs.y<canvas.height); if(Math.random()<0.02){const width=50+Math.random()*50; obstacles.push({x:Math.random()*(canvas.width-width),y:-50,w:width,h:20}); } }
 function collision(){ for(let obs of obstacles){ if(carX<obs.x+obs.w && carX+carWidth>obs.x && carY<obs.y+obs.h && carY+carHeight>obs.y){ score=0; obstacles=[]; } } }
 function moveCar(){ if(leftPressed && carX>0) carX-=5; if(rightPressed && carX+carWidth<canvas.width) carX+=5; }
-function drawScore(){ ctx.fillStyle='#000'; ctx.font='16px Chivo'; ctx.fillText(`Score: ${score}`,10,20); }
+function drawScore(){ ctx.fillStyle='#000'; ctx.font='16px Chivo'; ctx.fillText(`score: ${score}`,10,20); }
 function gameLoop(){ ctx.clearRect(0,0,canvas.width,canvas.height); moveCar(); updateObstacles(); collision(); drawCar(); drawObstacles(); drawScore(); score++; requestAnimationFrame(gameLoop); }
 gameLoop();
 </script>
