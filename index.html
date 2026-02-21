@@ -10,8 +10,8 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 
-body {
-  font-family:'Chivo', sans-serif;
+body{
+  font-family:'Chivo',sans-serif;
   background:#fff;
   color:#000;
   text-align:center;
@@ -19,31 +19,29 @@ body {
   text-transform:lowercase;
 }
 
-.hero {
+/* HERO */
+.hero{
   padding:60px 20px;
+  transition:transform 0.3s ease;
 }
 
-.hero img {
+.hero img{
   width:180px;
   max-width:70%;
   border-radius:8px;
 }
 
-.hero h1 {
-  margin:25px 0 10px;
-  font-size:2.5em;
-  font-weight:900;
-}
-
-/* folders */
-.files-container {
+/* DEPTH CONTAINER */
+.files-container{
   position:relative;
   width:100%;
   height:420px;
   margin-top:40px;
+  perspective:1200px;
 }
 
-.file {
+/* FOLDERS */
+.file{
   width:120px;
   padding:15px;
   background:#000;
@@ -52,15 +50,21 @@ body {
   cursor:grab;
   font-weight:700;
   font-size:0.9em;
-  box-shadow:3px 3px 0 #000;
+  box-shadow:8px 8px 0 rgba(0,0,0,0.25);
+  transform-style:preserve-3d;
+  transition:transform 0.2s ease;
 }
 
-.file:active {
-  cursor:grabbing;
+.file.depth-1{ transform:translateZ(20px); }
+.file.depth-2{ transform:translateZ(60px); }
+.file.depth-3{ transform:translateZ(120px); }
+
+.file:active{
+  transform:scale(1.05) translateZ(140px);
 }
 
-/* hidden sections */
-.section {
+/* SECTIONS */
+.section{
   display:none;
   margin:60px auto;
   max-width:95%;
@@ -68,38 +72,38 @@ body {
   border:1px solid #000;
 }
 
-.memory-grid {
+.memory-grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
   margin-top:15px;
 }
 
-.memory-square {
+.memory-square{
   height:70px;
   background:#eee;
   border:1px solid #000;
 }
 
-.memory-square.active {
+.memory-square.active{
   background:#000;
 }
 
-canvas {
+canvas{
   background:#eee;
   border:1px solid #000;
   width:100%;
   max-width:320px;
 }
 
-.controls {
+.controls{
   margin-top:15px;
   display:flex;
   justify-content:center;
   gap:20px;
 }
 
-.control-btn {
+.control-btn{
   padding:15px 25px;
   background:#000;
   color:#fff;
@@ -107,7 +111,7 @@ canvas {
   font-weight:700;
 }
 
-footer {
+footer{
   margin:60px 0 20px;
   font-size:0.8em;
   opacity:0.6;
@@ -116,6 +120,8 @@ footer {
 </head>
 
 <body>
+
+<audio id="glassSound" src="glass.mp3"></audio>
 
 <div class="hero">
   <img src="cover.jpg" alt="cover">
@@ -143,7 +149,6 @@ footer {
     <div class="memory-square"></div>
     <div class="memory-square"></div>
   </div>
-  <p id="memory-message">repeat the sequence</p>
 </div>
 
 <div class="section" id="car-section">
@@ -160,48 +165,71 @@ footer {
 </footer>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded",function(){
 
-/* random scatter */
-const container = document.querySelector(".files-container");
-const files = document.querySelectorAll(".file");
-
-function scatter() {
-  const cw = container.offsetWidth;
-  const ch = container.offsetHeight;
-
-  files.forEach(file => {
-    const maxX = cw - file.offsetWidth;
-    const maxY = ch - file.offsetHeight;
-    file.style.left = Math.random() * maxX + "px";
-    file.style.top = Math.random() * maxY + "px";
-  });
+const glass=document.getElementById("glassSound");
+function playGlass(){
+  glass.currentTime=0;
+  glass.play();
 }
 
+/* RANDOM SCATTER + DEPTH */
+const container=document.querySelector(".files-container");
+const files=document.querySelectorAll(".file");
+
+function scatter(){
+  const cw=container.offsetWidth;
+  const ch=container.offsetHeight;
+  const depths=["depth-1","depth-2","depth-3"];
+
+  files.forEach(file=>{
+    const maxX=cw-file.offsetWidth;
+    const maxY=ch-file.offsetHeight;
+    file.style.left=Math.random()*maxX+"px";
+    file.style.top=Math.random()*maxY+"px";
+
+    file.classList.remove("depth-1","depth-2","depth-3");
+    file.classList.add(depths[Math.floor(Math.random()*3)]);
+  });
+}
 scatter();
 
-/* drag */
-files.forEach(file => {
-  let offsetX, offsetY, dragging=false, moved=false;
+/* PARALLAX */
+document.addEventListener("mousemove",e=>{
+  const x=(e.clientX/window.innerWidth-0.5)*10;
+  const y=(e.clientY/window.innerHeight-0.5)*10;
 
-  file.addEventListener("mousedown", e => {
-    dragging=true; moved=false;
+  files.forEach(file=>{
+    file.style.transform+=` rotateY(${x}deg) rotateX(${-y}deg)`;
+  });
+
+  document.querySelector(".hero").style.transform=
+  `rotateY(${x/2}deg) rotateX(${-y/2}deg)`;
+});
+
+/* DRAG + CLICK */
+files.forEach(file=>{
+  let offsetX,offsetY,drag=false,moved=false;
+
+  file.addEventListener("mousedown",e=>{
+    drag=true; moved=false;
     offsetX=e.offsetX;
     offsetY=e.offsetY;
   });
 
-  document.addEventListener("mousemove", e => {
-    if(!dragging) return;
+  document.addEventListener("mousemove",e=>{
+    if(!drag) return;
     moved=true;
-    file.style.left = (e.pageX-offsetX)+"px";
-    file.style.top = (e.pageY-offsetY)+"px";
+    file.style.left=(e.pageX-offsetX)+"px";
+    file.style.top=(e.pageY-offsetY)+"px";
   });
 
-  document.addEventListener("mouseup", ()=> dragging=false);
+  document.addEventListener("mouseup",()=>drag=false);
 
-  /* toggle */
-  file.addEventListener("click", ()=>{
+  file.addEventListener("click",()=>{
     if(moved) return;
+
+    playGlass();
 
     if(file.id==="music-file"){
       window.open("https://linktr.ee/vegemiteloverr","_blank");
@@ -219,19 +247,18 @@ files.forEach(file => {
 
 function toggle(id){
   const section=document.getElementById(id);
-  const memory=document.getElementById("memory-section");
-  const car=document.getElementById("car-section");
-
-  if(id==="memory-section") car.style.display="none";
-  if(id==="car-section") memory.style.display="none";
-
-  section.style.display = section.style.display==="block" ? "none" : "block";
+  section.style.display=
+    section.style.display==="block"?"none":"block";
 }
 
-/* memory game */
-const squares=document.querySelectorAll('.memory-square');
-let sequence=[], player=[], level=1;
-const msg=document.getElementById("memory-message");
+/* MEMORY GAME */
+const squares=document.querySelectorAll(".memory-square");
+let sequence=[],player=[];
+
+function next(){
+  sequence.push(Math.floor(Math.random()*9));
+  flash();
+}
 
 function flash(){
   player=[];
@@ -241,23 +268,16 @@ function flash(){
     if(i<sequence.length){
       squares[sequence[i]].classList.add("active");
       i++;
-    } else {
-      clearInterval(interval);
-    }
+    }else clearInterval(interval);
   },500);
-}
-
-function next(){
-  sequence.push(Math.floor(Math.random()*9));
-  flash();
-  level++;
 }
 
 squares.forEach((sq,i)=>{
   sq.addEventListener("click",()=>{
     player.push(i);
     if(player[player.length-1]!==sequence[player.length-1]){
-      sequence=[]; level=1;
+      playGlass();
+      sequence=[];
       setTimeout(next,1000);
       return;
     }
@@ -269,10 +289,10 @@ squares.forEach((sq,i)=>{
 
 next();
 
-/* car game */
+/* CAR GAME */
 const canvas=document.getElementById("carCanvas");
 const ctx=canvas.getContext("2d");
-let carX=130, obstacles=[], score=0;
+let carX=130, obstacles=[];
 
 document.getElementById("leftBtn").onclick=()=>carX-=20;
 document.getElementById("rightBtn").onclick=()=>carX+=20;
@@ -290,13 +310,16 @@ function loop(){
   obstacles.forEach(o=>{
     o.y+=4;
     ctx.fillRect(o.x,o.y,40,20);
+
+    if(o.y>330 && o.x<carX+40 && o.x+40>carX){
+      playGlass();
+      obstacles=[];
+    }
   });
 
   obstacles=obstacles.filter(o=>o.y<400);
-
   requestAnimationFrame(loop);
 }
-
 loop();
 
 });
