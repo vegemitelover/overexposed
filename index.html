@@ -6,17 +6,16 @@
 <title>Overexposed - snowchild</title>
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
 <style>
-  /* Reset & base */
+  /* Reset & Base */
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: 'Chivo', sans-serif; background:#000; color:#fff; text-align:center; overflow-x:hidden; }
+  body { font-family: 'Chivo', sans-serif; background:#000; color:#fff; text-align:center; overflow-x:hidden; user-select:none; }
 
-  /* Hero Section */
+  /* Hero */
   .hero {
-    padding: 100px 20px;
+    padding: 80px 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
   }
   .hero img {
     width: 220px;
@@ -32,29 +31,31 @@
     font-weight: 900;
     letter-spacing: 2px;
   }
-  .hero p {
-    font-size: 1.2em;
-    font-weight: 700;
-    opacity: 0.8;
-    max-width: 400px;
-  }
+  .hero p { font-size:1.2em; font-weight:700; opacity:0.8; max-width:400px; }
 
-  /* Links */
-  .links {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin: 50px 0;
+  /* Movable Files */
+  .files-container {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    margin-top: 50px;
   }
-  .links a {
-    color: #fff;
-    font-weight: 700;
-    font-size: 1em;
-    text-decoration: none;
-    border-bottom: 1px solid #fff;
-    transition: all 0.3s;
+  .file {
+    width: 150px;
+    padding: 20px;
+    background:#111;
+    border:1px solid #fff;
+    border-radius:6px;
+    position:absolute;
+    cursor:grab;
+    transition: transform 0.2s, box-shadow 0.2s;
   }
-  .links a:hover { opacity: 0.7; }
+  .file:hover { transform: scale(1.05); box-shadow: 0 0 15px #fff; }
+
+  /* Linktree File */
+  .linktree-file { text-align:center; font-weight:700; }
+  .linktree-file a { color:#fff; text-decoration:none; }
+  .linktree-file a:hover { opacity:0.7; }
 
   /* Section Titles */
   h2 { margin-bottom: 15px; font-size:2em; font-weight:900; }
@@ -68,26 +69,11 @@
     border-radius: 12px;
     background: #111;
   }
-  .memory-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 90px);
-    grid-gap: 12px;
-    justify-content: center;
-  }
-  .memory-square {
-    width: 90px;
-    height: 90px;
-    background: #222;
-    border: 1px solid #fff;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .memory-square.active { 
-    background: #fff; 
-    transform: scale(1.1); 
-  }
+  .memory-grid { display: grid; grid-template-columns: repeat(3, 90px); grid-gap:12px; justify-content:center; }
+  .memory-square { width:90px; height:90px; background:#222; border:1px solid #fff; cursor:pointer; transition: all 0.2s; }
+  .memory-square.active { background:#fff; transform: scale(1.1); }
   .warning { font-weight:700; margin-bottom:15px; opacity:0.7; }
-  #memory-message { margin-top: 15px; font-weight:700; opacity:0.8; }
+  #memory-message { margin-top:15px; font-weight:700; opacity:0.8; }
 
   /* Car Game */
   .car-game {
@@ -101,34 +87,35 @@
   canvas { display:block; margin:0 auto; background:#000; border:1px solid #fff; }
 
   /* Footer */
-  footer {
-    margin: 60px 0 20px;
-    font-size:0.85em;
-    color: #888;
-    opacity:0.7;
-  }
+  footer { margin:60px 0 20px; font-size:0.85em; color:#888; opacity:0.7; }
 
-  /* Animations */
-  .fade-in { animation: fadeIn 1.5s ease forwards; opacity:0; }
-  @keyframes fadeIn { to { opacity:1; } }
 </style>
 </head>
 <body>
 
-<div class="hero fade-in">
+<div class="hero">
   <img src="cover.jpg" alt="Overexposed EP Cover">
   <h1>OVEREXPOSED</h1>
   <p>Experience it. Catch the moments.</p>
 </div>
 
-<div class="links fade-in">
-  <a href="https://open.spotify.com/..." target="_blank">Spotify</a>
-  <a href="https://music.apple.com/..." target="_blank">Apple Music</a>
-  <a href="https://tidal.com/..." target="_blank">Tidal</a>
+<!-- Movable Files -->
+<div class="files-container">
+  <div class="file" style="top:50px; left:50px;" id="linktree">
+    <div class="linktree-file">
+      <a href="https://linktr.ee/vegemiteloverr" target="_blank">🎵 Music</a>
+    </div>
+  </div>
+  <div class="file" style="top:50px; left:250px;" id="memory-game-file">
+    <div>🟩 Memory Game</div>
+  </div>
+  <div class="file" style="top:50px; left:450px;" id="car-game-file">
+    <div>🚗 Car Challenge</div>
+  </div>
 </div>
 
-<!-- Memory Game Section -->
-<div class="memory-game fade-in">
+<!-- Memory Game -->
+<div class="memory-game" id="memory-game-section">
   <h2>Strobe Memory Game</h2>
   <p class="warning">⚠️ Flashing lights – viewer discretion advised.</p>
   <div class="memory-grid">
@@ -145,8 +132,8 @@
   <p id="memory-message">Click squares in the same sequence!</p>
 </div>
 
-<!-- Car Driving Game Section -->
-<div class="car-game fade-in">
+<!-- Car Game -->
+<div class="car-game" id="car-game-section">
   <h2>8-bit Car Challenge</h2>
   <canvas id="carCanvas" width="300" height="400"></canvas>
   <p>Use arrow keys to dodge obstacles.</p>
@@ -157,6 +144,37 @@
 </footer>
 
 <script>
+  /******** MOVABLE FILES ********/
+  const files = document.querySelectorAll('.file');
+  files.forEach(file => {
+    file.onmousedown = function(e) {
+      let shiftX = e.clientX - file.getBoundingClientRect().left;
+      let shiftY = e.clientY - file.getBoundingClientRect().top;
+
+      function moveAt(pageX, pageY) {
+        file.style.left = pageX - shiftX + 'px';
+        file.style.top = pageY - shiftY + 'px';
+      }
+
+      function onMouseMove(e) {
+        moveAt(e.pageX, e.pageY);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+
+      file.onmouseup = function() {
+        document.removeEventListener('mousemove', onMouseMove);
+        file.onmouseup = null;
+      };
+    };
+
+    file.ondragstart = function() { return false; };
+
+    // Click to scroll to section
+    if(file.id === "memory-game-file") file.onclick = () => { document.getElementById("memory-game-section").scrollIntoView({behavior:'smooth'}); }
+    if(file.id === "car-game-file") file.onclick = () => { document.getElementById("car-game-section").scrollIntoView({behavior:'smooth'}); }
+  });
+
   /******** MEMORY GAME ********/
   const memSquares = document.querySelectorAll('.memory-square');
   const memMessage = document.getElementById('memory-message');
@@ -170,13 +188,8 @@
     let i = 0;
     const interval = setInterval(() => {
       memSquares.forEach(s => s.classList.remove('active'));
-      if (i < sequence.length) {
-        memSquares[sequence[i]].classList.add('active');
-        i++;
-      } else {
-        clearInterval(interval);
-        memMessage.textContent = `Your turn! Repeat the sequence.`;
-      }
+      if (i < sequence.length) { memSquares[sequence[i]].classList.add('active'); i++; } 
+      else { clearInterval(interval); memMessage.textContent = `Your turn! Repeat the sequence.`; }
     }, 600);
   }
 
@@ -189,56 +202,35 @@
 
   memSquares.forEach((sq, idx) => {
     sq.addEventListener('click', () => {
-      if (!sequence.length) return;
+      if(!sequence.length) return;
       playerSequence.push(idx);
       sq.classList.add('active');
       setTimeout(() => sq.classList.remove('active'), 300);
-
-      for (let i = 0; i < playerSequence.length; i++) {
-        if (playerSequence[i] !== sequence[i]) {
-          memMessage.textContent = `Wrong! Restarting...`;
-          sequence = [];
-          level = 1;
-          setTimeout(nextLevel, 1000);
-          return;
-        }
-      }
-      if (playerSequence.length === sequence.length) {
-        memMessage.textContent = `Good! Next level.`;
-        setTimeout(nextLevel, 1000);
-      }
+      for(let i=0;i<playerSequence.length;i++){ if(playerSequence[i]!==sequence[i]){ memMessage.textContent="Wrong! Restarting..."; sequence=[]; level=1; setTimeout(nextLevel,1000); return; } }
+      if(playerSequence.length===sequence.length){ memMessage.textContent="Good! Next level."; setTimeout(nextLevel,1000); }
     });
   });
 
   nextLevel();
 
-  /******** 8-BIT CAR GAME ********/
+  /******** CAR GAME ********/
   const canvas = document.getElementById('carCanvas');
   const ctx = canvas.getContext('2d');
-  const carWidth = 30, carHeight = 50;
-  let carX = canvas.width/2 - carWidth/2;
-  let carY = canvas.height - carHeight - 10;
-  let obstacles = [];
-  let score = 0;
-  let leftPressed = false;
-  let rightPressed = false;
-
+  const carWidth=30, carHeight=50;
+  let carX=canvas.width/2 - carWidth/2, carY=canvas.height - carHeight -10;
+  let obstacles=[], score=0, leftPressed=false, rightPressed=false;
   document.addEventListener('keydown', e => { if(e.key==='ArrowLeft') leftPressed=true; if(e.key==='ArrowRight') rightPressed=true; });
   document.addEventListener('keyup', e => { if(e.key==='ArrowLeft') leftPressed=false; if(e.key==='ArrowRight') rightPressed=false; });
 
-  function drawCar() { ctx.fillStyle = '#fff'; ctx.fillRect(carX, carY, carWidth, carHeight); }
-  function drawObstacles() { ctx.fillStyle = '#888'; obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.w, obs.h)); }
-  function updateObstacles() {
-    obstacles.forEach(obs => obs.y += 4);
-    obstacles = obstacles.filter(obs => obs.y < canvas.height);
-    if(Math.random() < 0.02) { const width = 50 + Math.random()*50; obstacles.push({x: Math.random()*(canvas.width-width), y:-50, w:width, h:20}); }
-  }
-  function collision() { for(let obs of obstacles){ if(carX<obs.x+obs.w && carX+carWidth>obs.x && carY<obs.y+obs.h && carY+carHeight>obs.y){ score=0; obstacles=[]; } } }
-  function moveCar() { if(leftPressed && carX>0) carX -=5; if(rightPressed && carX+carWidth<canvas.width) carX +=5; }
-  function drawScore() { ctx.fillStyle='#fff'; ctx.font='16px Chivo'; ctx.fillText(`Score: ${score}`,10,20); }
+  function drawCar(){ ctx.fillStyle='#fff'; ctx.fillRect(carX, carY, carWidth, carHeight); }
+  function drawObstacles(){ ctx.fillStyle='#888'; obstacles.forEach(obs => ctx.fillRect(obs.x, obs.y, obs.w, obs.h)); }
+  function updateObstacles(){ obstacles.forEach(obs=>obs.y+=4); obstacles=obstacles.filter(obs=>obs.y<canvas.height); if(Math.random()<0.02){const width=50+Math.random()*50; obstacles.push({x:Math.random()*(canvas.width-width),y:-50,w:width,h:20}); } }
+  function collision(){ for(let obs of obstacles){ if(carX<obs.x+obs.w && carX+carWidth>obs.x && carY<obs.y+obs.h && carY+carHeight>obs.y){ score=0; obstacles=[]; } } }
+  function moveCar(){ if(leftPressed && carX>0) carX-=5; if(rightPressed && carX+carWidth<canvas.width) carX+=5; }
+  function drawScore(){ ctx.fillStyle='#fff'; ctx.font='16px Chivo'; ctx.fillText(`Score: ${score}`,10,20); }
   function gameLoop(){ ctx.clearRect(0,0,canvas.width,canvas.height); moveCar(); updateObstacles(); collision(); drawCar(); drawObstacles(); drawScore(); score++; requestAnimationFrame(gameLoop); }
   gameLoop();
-</script>
 
+</script>
 </body>
 </html>
