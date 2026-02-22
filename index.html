@@ -32,15 +32,16 @@ body{
   display:block;
 }
 
-/* sections */
+/* sections (hidden by default) */
 .section{
+  display:none;
   margin:20px auto;
   max-width:600px;
   padding:15px;
   border:1px solid #000;
 }
 
-/* memory game */
+/* memory game (hidden until folder click) */
 #memory-grid{
   display:grid;
   grid-template-columns:repeat(2,100px);
@@ -78,7 +79,7 @@ body{
   <div class="file" id="memory-file">memory game</div>
 </div>
 
-<!-- definition -->
+<!-- definition (hidden until click) -->
 <div class="section" id="definition-section">
 <p>
 the state of being overwhelmed by too much light or attention, where detail disappears and things feel washed out.
@@ -86,14 +87,14 @@ the state of being overwhelmed by too much light or attention, where detail disa
 <p><strong>4/10</strong></p>
 </div>
 
-<!-- feelings -->
+<!-- feelings (hidden until click) -->
 <div class="section" id="feelings-section">
 <p>
 i feel like i’m in between versions of myself… not who i was, not who i’m becoming yet.
 </p>
 </div>
 
-<!-- memory game -->
+<!-- memory game (hidden until click) -->
 <div class="section" id="memory-section">
 <h2>memory game</h2>
 <p>repeat the flashing pattern</p>
@@ -107,7 +108,7 @@ i feel like i’m in between versions of myself… not who i was, not who i’m 
 </div>
 
 <script>
-/* music */
+/* music (play on click) */
 const music=document.getElementById("bg-music");
 document.body.addEventListener("click",()=>{
   music.play().catch(()=>{});
@@ -140,7 +141,21 @@ document.querySelectorAll(".file").forEach(file=>{
   file.addEventListener("pointerup",()=>drag=false);
 });
 
-/* memory game (Simon) */
+/* click folders -> reveal sections */
+document.addEventListener("click",e=>{
+  if(!e.target.classList.contains("file")) return;
+
+  if(e.target.id==="definition-file") toggle("definition-section");
+  if(e.target.id==="feelings-file") toggle("feelings-section");
+  if(e.target.id==="memory-file") toggle("memory-section");
+});
+
+function toggle(id){
+  const s=document.getElementById(id);
+  s.style.display = s.style.display==="block" ? "none" : "block";
+}
+
+/* memory game (Simon style) */
 const startBtn=document.getElementById("start-memory");
 const tiles=[...document.querySelectorAll(".tile")];
 let sequence=[];
