@@ -4,203 +4,59 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>overexposed</title>
-<link rel="icon" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-
 body{
   font-family:'Chivo',sans-serif;
-  background:#fff;
-  color:#000;
   text-align:center;
-  text-transform:lowercase;
-  overflow-x:hidden;
+  background:white;
 }
 
-/* LOADING SCREEN */
-#loading-screen{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  z-index:9999;
-  animation:flicker .15s infinite;
-}
-
-@keyframes flicker{
-  0%{opacity:1;}
-  50%{opacity:.92;}
-  100%{opacity:1;}
-}
-
-.loading-text{
-  font-size:1.5em;
-  font-weight:900;
-}
-
-.dots{
-  display:flex;
-  gap:8px;
-  margin-top:10px;
-}
-
-.dot{
-  width:8px;
-  height:8px;
-  background:#000;
-  opacity:0;
-  animation:fade 1.5s infinite;
-}
-
-.dot:nth-child(1){animation-delay:0s;}
-.dot:nth-child(2){animation-delay:.3s;}
-.dot:nth-child(3){animation-delay:.6s;}
-
-@keyframes fade{
-  0%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:0;}
-}
-
-/* SITE */
-#site{display:none;}
-
-.hero{padding:60px 20px;}
-
-.hero img{
-  width:180px;
-  max-width:70%;
-  border-radius:8px;
-}
-
-.hero h1{
-  margin:25px 0 10px;
-  font-size:2.5em;
-  font-weight:900;
-}
-
+/* folders */
 .files-container{
   position:relative;
-  width:100%;
-  height:500px;
-  margin-top:40px;
+  height:350px;
 }
-
 .file{
+  position:absolute;
   width:120px;
-  padding:12px;
+  padding:10px;
   background:#f2f2f2;
   border:2px solid #000;
-  color:#000;
-  position:absolute;
   cursor:grab;
-  font-weight:700;
-  font-size:.8em;
-  box-shadow:2px 2px 0 #000;
-  text-align:center;
   border-radius:4px;
 }
-
 .file::before{
   content:"📁";
   display:block;
   font-size:24px;
-  margin-bottom:6px;
 }
 
-/* SECTIONS */
-.section{
+/* sections */
+.section, .game-section{
   display:none;
-  margin:60px auto;
-  max-width:95%;
-  padding:25px;
+  margin:20px auto;
+  max-width:600px;
+  padding:15px;
   border:1px solid #000;
 }
 
-.pixel-text{
-  font-size:.85em;
-  line-height:1.6em;
-  text-shadow:1px 0 #000,0 1px #000;
-}
-
-/* GAMES */
-.game-section{
-  display:none;
-  margin:60px auto;
-  max-width:95%;
-  padding:20px;
-  border:1px solid #000;
-}
-
+/* car game */
 #car-canvas{
-  background:#eee;
-  border:2px solid #000;
   width:100%;
   max-width:400px;
-  height:300px;
-  display:block;
-  margin:0 auto;
+  height:250px;
+  background:#ddd;
 }
 
-#strobe-btn{
-  padding:10px 20px;
-  background:#000;
-  color:#fff;
-  border:none;
-  cursor:pointer;
-  font-weight:700;
-}
-
-/* hidden secret */
-.secret{
-  color:#fff;
-  user-select:text;
-}
-
-.secret::selection{
-  background:#000;
-  color:#fff;
-}
-
-footer{
-  margin:60px 0 20px;
-  font-size:.8em;
-  opacity:.6;
+/* mobile */
+canvas, .file{
+  touch-action:none;
 }
 </style>
 </head>
-
 <body>
 
-<!-- BACKGROUND MUSIC -->
-<audio id="bg-music" loop playsinline>
-  <source src="trustme.mp3" type="audio/mpeg">
-</audio>
-
-<!-- LOADING SCREEN -->
-<div id="loading-screen">
-  <div class="loading-text">loading</div>
-  <div class="dots">
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-  </div>
-</div>
-
-<div id="site">
-
-<div class="hero">
-  <img src="cover.jpg">
-  <h1>overexposed</h1>
-  <p>experience it. catch the moments.</p>
-</div>
-
-<!-- FOLDERS -->
 <div class="files-container">
   <div class="file" id="music-file">music</div>
   <div class="file" id="definition-file">definition</div>
@@ -209,109 +65,61 @@ footer{
   <div class="file" id="strobe-game-file">memory strobe</div>
 </div>
 
-<!-- SECTIONS -->
 <div class="section" id="definition-section">
-  <p class="pixel-text">
-  the state of being subjected to an excessive amount of attention, stimulus, or light, such that perception becomes overwhelmed and detail is lost.
-  <span class="secret">4/10</span>
-  </p>
+<p>
+the state of being overwhelmed by too much light or attention, where detail disappears and things feel washed out.
+</p>
 </div>
 
 <div class="section" id="feelings-section">
-  <p class="pixel-text">
-  i feel like i’m in between versions of myself.
-  </p>
+<p>
+i feel like i’m in between versions of myself… not who i was, not who i’m becoming yet.
+</p>
 </div>
 
-<!-- CAR GAME -->
 <div class="game-section" id="car-section">
-  <h2>8bit car</h2>
-  <canvas id="car-canvas" width="400" height="300"></canvas>
-  <p>use arrow keys to dodge</p>
+<h2>8bit car</h2>
+<canvas id="car-canvas" width="400" height="250"></canvas>
+<p>arrow keys or swipe to move</p>
 </div>
 
-<!-- STROBE GAME -->
 <div class="game-section" id="strobe-section">
-  <h2>memory strobe</h2>
-  <p>repeat the pattern by clicking the button sequence</p>
-  <button id="strobe-btn">start</button>
-</div>
-
-<footer>
-  © 2026 aussie
-</footer>
-
+<h2>memory strobe</h2>
+<p>repeat the flash pattern</p>
+<button id="strobe-btn">start</button>
 </div>
 
 <script>
-
-/* BACKGROUND MUSIC */
-const bgMusic = document.getElementById("bg-music");
-bgMusic.volume = 0.5;
-bgMusic.muted = true;
-
-window.addEventListener("load", () => {
-  bgMusic.play().catch(()=>{});
-});
-
-document.addEventListener("click", () => {
-  bgMusic.muted = false;
-  bgMusic.play().catch(()=>{});
-}, { once:true });
-
-/* LOADING DELAY */
-window.addEventListener("load",()=>{
-  setTimeout(()=>{
-    document.getElementById("loading-screen").style.display="none";
-    document.getElementById("site").style.display="block";
-    scatter();
-    initCarGame();
-    initStrobe();
-  },3000);
-});
-
-/* RANDOM SCATTER */
+/* scatter folders */
 function scatter(){
-  const container=document.querySelector(".files-container");
+  const cont=document.querySelector(".files-container");
   const files=document.querySelectorAll(".file");
-  const cw=container.offsetWidth;
-  const ch=container.offsetHeight;
-
-  files.forEach(file=>{
-    file.style.left=Math.random()*(cw-file.offsetWidth)+"px";
-    file.style.top=Math.random()*(ch-file.offsetHeight)+"px";
+  files.forEach(f=>{
+    f.style.left=Math.random()*(cont.offsetWidth-120)+"px";
+    f.style.top=Math.random()*(cont.offsetHeight-80)+"px";
   });
 }
+window.onload=scatter;
 
-/* DRAGGING */
+/* drag folders */
 document.querySelectorAll(".file").forEach(file=>{
-  let offsetX, offsetY, isDragging=false;
-
-  file.addEventListener("pointerdown",(e)=>{
-    isDragging=true;
-    offsetX=e.clientX-file.offsetLeft;
-    offsetY=e.clientY-file.offsetTop;
-    file.setPointerCapture(e.pointerId);
+  let x,y,drag=false;
+  file.addEventListener("pointerdown",e=>{
+    drag=true;
+    x=e.clientX-file.offsetLeft;
+    y=e.clientY-file.offsetTop;
   });
-
-  file.addEventListener("pointermove",(e)=>{
-    if(!isDragging) return;
-    file.style.left=(e.clientX-offsetX)+"px";
-    file.style.top=(e.clientY-offsetY)+"px";
+  file.addEventListener("pointermove",e=>{
+    if(!drag) return;
+    file.style.left=(e.clientX-x)+"px";
+    file.style.top=(e.clientY-y)+"px";
   });
-
-  file.addEventListener("pointerup",()=>{
-    isDragging=false;
-  });
+  file.addEventListener("pointerup",()=>drag=false);
 });
 
-/* CLICK BEHAVIOR */
-document.addEventListener("click",function(e){
+/* click folders */
+document.addEventListener("click",e=>{
   if(!e.target.classList.contains("file")) return;
-
-  if(e.target.id==="music-file"){
-    window.open("https://linktr.ee/vegemiteloverr","_blank");
-  }
 
   if(e.target.id==="definition-file") toggle("definition-section");
   if(e.target.id==="feelings-file") toggle("feelings-section");
@@ -320,118 +128,95 @@ document.addEventListener("click",function(e){
 });
 
 function toggle(id){
-  const section=document.getElementById(id);
-  section.style.display =
-    section.style.display==="block" ? "none" : "block";
+  const s=document.getElementById(id);
+  s.style.display = s.style.display==="block" ? "none" : "block";
 }
 
-/* ======================
-   8-BIT CAR GAME (FIXED COLLISION)
-====================== */
-const canvas = document.getElementById("car-canvas");
-const ctx = canvas.getContext("2d");
+/* car game */
+const canvas=document.getElementById("car-canvas");
+const ctx=canvas.getContext("2d");
+let car={x:180,y:180,w:40,h:40,speed:5};
+let obs=[];
+let keys={};
 
-let car = { x:180, y:240, w:40, h:40, speed:5 };
-let obstacles = [];
-let keys = {};
+document.addEventListener("keydown",e=>keys[e.key]=true);
+document.addEventListener("keyup",e=>keys[e.key]=false);
 
-function initCarGame(){
-  document.addEventListener("keydown",e=>keys[e.key]=true);
-  document.addEventListener("keyup",e=>keys[e.key]=false);
-  setInterval(spawnObstacle,1800);
-  requestAnimationFrame(updateCar);
+function spawn(){
+  obs.push({x:Math.random()*(canvas.width-40),y:-40,w:40,h:40,speed:2});
 }
+setInterval(spawn,2000);
 
-function spawnObstacle(){
-  obstacles.push({ x:Math.random()*360, y:-40, w:40, h:40, speed:2 });
-}
-
-function updateCar(){
+function update(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
   ctx.fillStyle="#ddd";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
   if(keys["ArrowLeft"]) car.x-=car.speed;
   if(keys["ArrowRight"]) car.x+=car.speed;
-  car.x = Math.max(0, Math.min(canvas.width-car.w, car.x));
+  car.x=Math.max(0,Math.min(canvas.width-car.w,car.x));
 
   ctx.fillStyle="#000";
   ctx.fillRect(car.x,car.y,car.w,car.h);
 
-  obstacles.forEach((o,i)=>{
-    o.y += o.speed;
+  obs.forEach((o,i)=>{
+    o.y+=o.speed;
     ctx.fillRect(o.x,o.y,o.w,o.h);
 
-    // collision with padding (not too strict)
     if(
-      car.x < o.x+o.w-5 &&
-      car.x+car.w > o.x+5 &&
-      car.y < o.y+o.h-5 &&
-      car.y+car.h > o.y+5
+      car.x < o.x+o.w &&
+      car.x+car.w > o.x &&
+      car.y < o.y+o.h &&
+      car.y+car.h > o.y
     ){
-      obstacles=[];
-      alert("crash!");
+      obs=[];
+      alert("crash");
     }
-
-    if(o.y>canvas.height) obstacles.splice(i,1);
+    if(o.y>canvas.height) obs.splice(i,1);
   });
 
-  requestAnimationFrame(updateCar);
+  requestAnimationFrame(update);
 }
+update();
 
-/* ======================
-   MEMORY STROBE GAME (FIXED)
-====================== */
-const strobeBtn = document.getElementById("strobe-btn");
-let sequence = [];
-let userIndex = 0;
-let showing = false;
+/* memory strobe */
+const btn=document.getElementById("strobe-btn");
+let seq=[],pos=0,showing=false;
 
-function initStrobe(){
-  strobeBtn.addEventListener("click", startStrobe);
-}
-
-function flash(color, time){
-  document.body.style.background = color;
+function flash(color,time){
+  document.body.style.background=color;
   return new Promise(res=>setTimeout(res,time));
 }
 
-async function startStrobe(){
-  sequence = [];
-  userIndex = 0;
-  for(let i=0;i<4;i++) sequence.push(Math.floor(Math.random()*2));
-  showing = true;
+btn.addEventListener("click",async()=>{
+  seq=[];
+  pos=0;
+  for(let i=0;i<4;i++) seq.push(Math.floor(Math.random()*2));
 
-  for(let i of sequence){
-    await flash(i===0?"#000":"#fff",300);
+  showing=true;
+  for(let s of seq){
+    await flash(s===0?"#000":"#fff",300);
     await flash("#fff",200);
   }
+  showing=false;
+  document.body.style.background="#fff";
+  btn.textContent="repeat pattern";
+});
 
-  showing = false;
-  document.body.style.background = "#fff";
-  strobeBtn.textContent = "repeat pattern (click)";
-
-  strobeBtn.onclick = checkStrobe;
-}
-
-function checkStrobe(){
+btn.addEventListener("click",()=>{
   if(showing) return;
-
-  let guess = userIndex % 2; // simple toggle
-  if(guess === sequence[userIndex]){
-    userIndex++;
-    if(userIndex >= sequence.length){
-      alert("good job!");
-      strobeBtn.textContent = "start";
-      strobeBtn.onclick = startStrobe;
+  let guess=Math.floor(Math.random()*2);
+  if(guess===seq[pos]){
+    pos++;
+    if(pos>=seq.length){
+      alert("good job");
+      pos=0;
     }
   } else {
-    alert("wrong pattern");
-    userIndex = 0;
+    alert("wrong");
+    pos=0;
   }
-}
-
+});
 </script>
 
 </body>
