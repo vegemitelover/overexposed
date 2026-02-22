@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>overexposed</title>
+<link rel="icon" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
 
 <style>
@@ -16,17 +17,9 @@ body{
   text-align:center;
   text-transform:lowercase;
   overflow-x:hidden;
-  perspective:1200px;
 }
 
-.background-layer{
-  position:fixed;
-  inset:0;
-  background:linear-gradient(180deg,#fff 0%,#f3f3f3 100%);
-  z-index:-1;
-  transform:translateZ(-200px) scale(1.3);
-}
-
+/* LOADING SCREEN */
 #loading-screen{
   position:fixed;
   inset:0;
@@ -45,33 +38,61 @@ body{
   100%{opacity:1;}
 }
 
-.loading-text{font-weight:900;}
-
-#site{display:none;}
-
-.hero{
-  padding:60px 20px;
-  transform:translateZ(40px);
-  transition:transform 0.2s ease;
+.loading-text{
+  font-size:1.5em;
+  font-weight:900;
 }
 
-.volume-note{
-  font-size:.8em;
-  opacity:.6;
+.dots{
+  display:flex;
+  gap:8px;
   margin-top:10px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  background:#000;
+  opacity:0;
+  animation:fade 1.5s infinite;
+}
+
+.dot:nth-child(1){animation-delay:0s;}
+.dot:nth-child(2){animation-delay:.3s;}
+.dot:nth-child(3){animation-delay:.6s;}
+
+@keyframes fade{
+  0%{opacity:0;}
+  50%{opacity:1;}
+  100%{opacity:0;}
+}
+
+/* SITE */
+#site{display:none;}
+
+.hero{padding:60px 20px;}
+
+.hero img{
+  width:180px;
+  max-width:70%;
+  border-radius:8px;
+}
+
+.hero h1{
+  margin:25px 0 10px;
+  font-size:2.5em;
+  font-weight:900;
 }
 
 .files-container{
   position:relative;
   width:100%;
-  height:520px;
+  height:500px;
   margin-top:40px;
-  perspective:1200px;
-  transform-style:preserve-3d;
 }
 
 .file{
-  width:160px;
+  width:150px;
   padding:15px;
   background:#000;
   color:#fff;
@@ -81,29 +102,32 @@ body{
   font-size:.9em;
   box-shadow:3px 3px 0 #000;
   touch-action:none;
-  transform-style:preserve-3d;
-  transition:transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.file:hover{
-  transform:translateZ(50px) scale(1.03);
-  box-shadow:8px 8px 0 #000;
-}
-
+/* SECTIONS */
 .section{
   display:none;
   margin:60px auto;
   max-width:95%;
   padding:25px;
   border:1px solid #000;
-  background:#fff;
 }
 
-.game{
-  margin:15px 0;
-  padding:12px;
-  border:1px solid #000;
-  cursor:pointer;
+.pixel-text{
+  font-size:.85em;
+  line-height:1.6em;
+  text-shadow:1px 0 #000,0 1px #000;
+}
+
+/* hidden secret */
+.secret{
+  color:#fff;
+  user-select:text;
+}
+
+.secret::selection{
+  background:#000;
+  color:#fff;
 }
 
 footer{
@@ -116,52 +140,56 @@ footer{
 
 <body>
 
-<audio id="bg-music" autoplay loop playsinline>
+<!-- BACKGROUND MUSIC -->
+<audio id="bg-music" loop playsinline>
   <source src="trustme.mp3" type="audio/mpeg">
 </audio>
 
-<div class="background-layer"></div>
-
+<!-- LOADING SCREEN -->
 <div id="loading-screen">
-  <div class="loading-text">loading...</div>
+  <div class="loading-text">loading</div>
+  <div class="dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
 </div>
 
 <div id="site">
 
 <div class="hero">
+  <img src="cover.jpg">
   <h1>overexposed</h1>
-  <div class="volume-note">turn your volume up.</div>
+  <p>experience it. catch the moments.</p>
 </div>
 
 <div class="files-container">
   <div class="file" id="music-file">music</div>
   <div class="file" id="definition-file">definition</div>
   <div class="file" id="feelings-file">my feelings</div>
-  <div class="file" id="games-file">games</div>
 </div>
 
 <div class="section" id="definition-section">
-  overexposed means too much light, too much attention, too much visibility.
-  <span style="color:#fff;">4/10</span>
+  <p class="pixel-text">
+  the state of being subjected to an excessive amount of attention, stimulus, or light, such that perception becomes overwhelmed and detail is lost. in visual media, it occurs when too much light reaches a sensor, washing out nuance and flattening depth. metaphorically, it describes the exhaustion of being constantly seen or scrutinized. it represents vulnerability, saturation, and the tension between wanting to be visible and fearing what visibility costs.
+  <span class="secret">4/10</span>
+  </p>
 </div>
 
 <div class="section" id="feelings-section">
-  (your full paragraph text here)
-</div>
+  <p class="pixel-text">
+  i feel like i’m in between versions of myself.
 
-<div class="section" id="games-section">
-  <div class="game" onclick="window.open('https://example.com/car-game','_blank')">
-    car game
-  </div>
-  <div class="game" onclick="window.open('https://example.com/memory-game','_blank')">
-    memory game
-  </div>
-  <div class="game" onclick="window.open('https://example.com','_blank')">
-    memory glitch
-  </div>
-  <div class="game" onclick="window.open('https://example.com','_blank')">
-    reaction test
-  </div>
+  like i’m not who i was, but i’m not who i’m trying to become yet either. i wake up and everything feels kind of heavy, not in a dramatic way, just in a constant, low hum kind of way. i feel things too much. a small shift in someone’s tone can ruin my whole day. a good hangout can make me feel alive, and then the quiet after makes me feel empty. it’s like my emotions don’t have a dimmer switch. they’re either glowing or completely dark.
+
+  i want to be chosen. not casually liked. not “you’re cool.” i want to be seen. i want someone to look at me and know i’m different in a way that matters. but i’m scared i care more than people care about me. when something doesn’t work out, it doesn’t just feel like rejection. it feels like confirmation of my worst fear, that i’m always almost enough.
+
+  i’m scared of growing up. i’m scared of becoming normal. i’m scared that one day i’ll look back at this version of me, the one who believes he could make something iconic, and realize i let it slip away. but i’m also tired. tired of overthinking every interaction. tired of replaying conversations. tired of feeling like my heart is always slightly exposed.
+
+  at the same time, i know there’s something in me. when i write, it feels like i’m tapping into a part of myself that’s deeper than all this noise. like there’s a frequency underneath everything, and i can hear it. but i don’t fully know how to live in it yet.
+
+  mostly, i feel like i’m trying really hard to become someone unforgettable, while secretly being afraid i’ll be forgotten.
+  </p>
 </div>
 
 <footer>
@@ -172,34 +200,30 @@ footer{
 
 <script>
 
+/* BACKGROUND MUSIC (MOBILE SAFE AUTOPLAY) */
 const bgMusic = document.getElementById("bg-music");
-bgMusic.volume = 0;
+bgMusic.volume = 0.5;
 bgMusic.muted = true;
 
-/* fade in music on first interaction */
-function startMusic(){
-  bgMusic.muted = false;
-  let fade = setInterval(()=>{
-    if(bgMusic.volume < 0.5){
-      bgMusic.volume += 0.05;
-    } else {
-      clearInterval(fade);
-    }
-  },200);
-}
-
-document.addEventListener("click", startMusic, { once:true });
-
-window.addEventListener("load",()=>{
+window.addEventListener("load", () => {
   bgMusic.play().catch(()=>{});
+});
+
+document.addEventListener("click", () => {
+  bgMusic.muted = false;
+  bgMusic.play().catch(()=>{});
+}, { once:true });
+
+/* LOADING DELAY */
+window.addEventListener("load",()=>{
   setTimeout(()=>{
     document.getElementById("loading-screen").style.display="none";
     document.getElementById("site").style.display="block";
     scatter();
-  },2500);
+  },3000);
 });
 
-/* random scatter with depth */
+/* RANDOM SCATTER */
 function scatter(){
   const container=document.querySelector(".files-container");
   const files=document.querySelectorAll(".file");
@@ -207,15 +231,12 @@ function scatter(){
   const ch=container.offsetHeight;
 
   files.forEach(file=>{
-    const depth = Math.random()*100;
     file.style.left=Math.random()*(cw-file.offsetWidth)+"px";
     file.style.top=Math.random()*(ch-file.offsetHeight)+"px";
-    file.style.transform=`translateZ(${depth}px)`;
-    file.dataset.depth = depth;
   });
 }
 
-/* dragging */
+/* DRAGGING (MOBILE + DESKTOP) */
 document.querySelectorAll(".file").forEach(file=>{
   let offsetX, offsetY, isDragging=false;
 
@@ -224,7 +245,6 @@ document.querySelectorAll(".file").forEach(file=>{
     offsetX=e.clientX-file.offsetLeft;
     offsetY=e.clientY-file.offsetTop;
     file.setPointerCapture(e.pointerId);
-    file.style.transition="none";
   });
 
   file.addEventListener("pointermove",(e)=>{
@@ -235,11 +255,10 @@ document.querySelectorAll(".file").forEach(file=>{
 
   file.addEventListener("pointerup",()=>{
     isDragging=false;
-    file.style.transition="transform 0.2s ease";
   });
 });
 
-/* toggles */
+/* CLICK BEHAVIOR */
 document.addEventListener("click",function(e){
   if(!e.target.classList.contains("file")) return;
 
@@ -254,24 +273,13 @@ document.addEventListener("click",function(e){
   if(e.target.id==="feelings-file"){
     toggle("feelings-section");
   }
-
-  if(e.target.id==="games-file"){
-    toggle("games-section");
-  }
 });
 
 function toggle(id){
   const section=document.getElementById(id);
-  section.style.display =
+  section.style.display=
     section.style.display==="block"?"none":"block";
 }
-
-/* parallax depth on scroll */
-window.addEventListener("scroll",()=>{
-  const sc = window.scrollY;
-  document.querySelector(".hero").style.transform =
-    `translateZ(${40 + sc*0.03}px)`;
-});
 
 </script>
 
