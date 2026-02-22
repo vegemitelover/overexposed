@@ -13,17 +13,6 @@ body{
   background:white;
 }
 
-/* loading */
-#loading{
-  position:fixed;
-  inset:0;
-  background:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-#site{display:none;}
-
 /* folders */
 .files-container{
   position:relative;
@@ -44,20 +33,11 @@ body{
 }
 
 /* sections */
-.section, .game-section{
-  display:none;
+.section{
   margin:20px auto;
   max-width:600px;
   padding:15px;
   border:1px solid #000;
-}
-
-/* definition */
-#definition-section p{
-  margin-bottom:10px;
-}
-#definition-section .easter{
-  font-weight:900;
 }
 
 /* memory game */
@@ -79,6 +59,13 @@ body{
 }
 
 /* car game */
+#car-section{
+  margin:20px auto;
+  max-width:600px;
+  padding:15px;
+  border:1px solid #000;
+}
+
 #car-canvas{
   width:100%;
   max-width:300px;
@@ -88,19 +75,10 @@ body{
   margin:0 auto;
   touch-action:none;
 }
-
-/* mobile */
-canvas, .file{
-  touch-action:none;
-}
 </style>
 </head>
 
 <body>
-
-<div id="loading">loading</div>
-
-<div id="site">
 
 <audio id="bg-music" loop>
   <source src="trustme.mp3" type="audio/mpeg">
@@ -116,7 +94,6 @@ canvas, .file{
   <div class="file" id="definition-file">definition</div>
   <div class="file" id="feelings-file">my feelings</div>
   <div class="file" id="memory-file">memory game</div>
-  <div class="file" id="car-file">8bit car</div>
 </div>
 
 <!-- definition -->
@@ -124,7 +101,7 @@ canvas, .file{
 <p>
 the state of being overwhelmed by too much light or attention, where detail disappears and things feel washed out.
 </p>
-<p class="easter">4/10</p>
+<p><strong>4/10</strong></p>
 </div>
 
 <!-- feelings -->
@@ -135,7 +112,7 @@ i feel like i’m in between versions of myself… not who i was, not who i’m 
 </div>
 
 <!-- memory game -->
-<div class="game-section" id="memory-section">
+<div class="section" id="memory-section">
 <h2>memory game</h2>
 <p>repeat the flashing pattern</p>
 <div id="memory-grid">
@@ -148,25 +125,14 @@ i feel like i’m in between versions of myself… not who i was, not who i’m 
 </div>
 
 <!-- car game -->
-<div class="game-section" id="car-section">
+<div id="car-section">
 <h2>8bit car</h2>
 <canvas id="car-canvas" width="300" height="200"></canvas>
 <p>touch left / right to move</p>
 </div>
 
-</div>
-
 <script>
-/* load */
-window.onload=()=>{
-  document.getElementById("loading").style.display="none";
-  document.getElementById("site").style.display="block";
-  scatter();
-  initMemory();
-  initCar();
-};
-
-/* music (play on click) */
+/* music */
 const music=document.getElementById("bg-music");
 document.body.addEventListener("click",()=>{
   music.play().catch(()=>{});
@@ -181,6 +147,7 @@ function scatter(){
     f.style.top=Math.random()*(cont.offsetHeight-80)+"px";
   });
 }
+window.onload=scatter;
 
 /* drag folders */
 document.querySelectorAll(".file").forEach(file=>{
@@ -198,22 +165,7 @@ document.querySelectorAll(".file").forEach(file=>{
   file.addEventListener("pointerup",()=>drag=false);
 });
 
-/* click folders */
-document.addEventListener("click",e=>{
-  if(!e.target.classList.contains("file")) return;
-
-  if(e.target.id==="definition-file") toggle("definition-section");
-  if(e.target.id==="feelings-file") toggle("feelings-section");
-  if(e.target.id==="memory-file") toggle("memory-section");
-  if(e.target.id==="car-file") toggle("car-section");
-});
-
-function toggle(id){
-  const s=document.getElementById(id);
-  s.style.display = s.style.display==="block" ? "none" : "block";
-}
-
-/* ============== MEMORY GAME (SIMON STYLE) ============== */
+/* memory game (Simon) */
 const startBtn=document.getElementById("start-memory");
 const tiles=[...document.querySelectorAll(".tile")];
 let sequence=[];
@@ -266,11 +218,12 @@ tiles.forEach(tile=>{
   });
 });
 
-/* ================= CAR GAME (mobile) ================= */
+/* car game (mobile) */
 const canvas=document.getElementById("car-canvas");
 const ctx=canvas.getContext("2d");
-let car={x:120,y:120,w:40,h:40,speed:4};
-let obs=[];
+
+let car={x:130,y:140,w:40,h:40};
+let obstacles=[];
 let touchX=null;
 
 /* touch controls */
@@ -280,28 +233,40 @@ canvas.addEventListener("touchstart",e=>{
 canvas.addEventListener("touchmove",e=>{
   if(touchX===null) return;
   let dx=e.touches[0].clientX-touchX;
-  car.x += dx>0 ? car.speed : -car.speed;
+  car.x += dx>0 ? 5 : -5;
   touchX=e.touches[0].clientX;
 });
 canvas.addEventListener("touchend",()=>touchX=null);
 
 /* spawn obstacles */
 function spawn(){
-  obs.push({x:Math.random()*(canvas.width-40),y:-40,w:40,h:40,speed:2});
+  obstacles.push({
+    x:Math.random()*(canvas.width-40),
+    y:-40,
+    w:40,
+    h:40,
+    speed:2
+  });
 }
 setInterval(spawn,2000);
 
+/* game loop */
 function update(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // road
   ctx.fillStyle="#ddd";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
+  // keep car in bounds
   car.x=Math.max(0,Math.min(canvas.width-car.w,car.x));
 
+  // draw car
   ctx.fillStyle="#000";
   ctx.fillRect(car.x,car.y,car.w,car.h);
 
-  obs.forEach((o,i)=>{
+  // obstacles
+  obstacles.forEach((o,i)=>{
     o.y+=o.speed;
     ctx.fillRect(o.x,o.y,o.w,o.h);
 
@@ -311,14 +276,15 @@ function update(){
       car.y < o.y+o.h &&
       car.y+car.h > o.y
     ){
-      obs=[];
+      obstacles=[];
     }
-    if(o.y>canvas.height) obs.splice(i,1);
+
+    if(o.y>canvas.height) obstacles.splice(i,1);
   });
 
   requestAnimationFrame(update);
 }
-function initCar(){ update(); }
+update();
 </script>
 
 </body>
