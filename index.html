@@ -200,6 +200,7 @@ footer{
   <p>experience it. catch the moments.</p>
 </div>
 
+<!-- FOLDERS -->
 <div class="files-container">
   <div class="file" id="music-file">music</div>
   <div class="file" id="definition-file">definition</div>
@@ -211,7 +212,7 @@ footer{
 <!-- SECTIONS -->
 <div class="section" id="definition-section">
   <p class="pixel-text">
-  the state of being subjected to an excessive amount of attention, stimulus, or light, such that perception becomes overwhelmed and detail is lost. in visual media, it occurs when too much light reaches a sensor, washing out nuance and flattening depth. metaphorically, it describes the exhaustion of being constantly seen or scrutinized. it represents vulnerability, saturation, and the tension between wanting to be visible and fearing what visibility costs.
+  the state of being subjected to an excessive amount of attention, stimulus, or light, such that perception becomes overwhelmed and detail is lost.
   <span class="secret">4/10</span>
   </p>
 </div>
@@ -232,7 +233,7 @@ footer{
 <!-- STROBE GAME -->
 <div class="game-section" id="strobe-section">
   <h2>memory strobe</h2>
-  <p>flash sequence. watch and repeat.</p>
+  <p>repeat the pattern by clicking the button sequence</p>
   <button id="strobe-btn">start</button>
 </div>
 
@@ -265,6 +266,7 @@ window.addEventListener("load",()=>{
     document.getElementById("site").style.display="block";
     scatter();
     initCarGame();
+    initStrobe();
   },3000);
 });
 
@@ -324,7 +326,7 @@ function toggle(id){
 }
 
 /* ======================
-   8-BIT CAR GAME
+   8-BIT CAR GAME (FIXED COLLISION)
 ====================== */
 const canvas = document.getElementById("car-canvas");
 const ctx = canvas.getContext("2d");
@@ -336,7 +338,7 @@ let keys = {};
 function initCarGame(){
   document.addEventListener("keydown",e=>keys[e.key]=true);
   document.addEventListener("keyup",e=>keys[e.key]=false);
-  setInterval(spawnObstacle,1500);
+  setInterval(spawnObstacle,1800);
   requestAnimationFrame(updateCar);
 }
 
@@ -347,33 +349,29 @@ function spawnObstacle(){
 function updateCar(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
-  // road
-  ctx.fillStyle="#ccc";
+  ctx.fillStyle="#ddd";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // car
   if(keys["ArrowLeft"]) car.x-=car.speed;
   if(keys["ArrowRight"]) car.x+=car.speed;
-
   car.x = Math.max(0, Math.min(canvas.width-car.w, car.x));
 
   ctx.fillStyle="#000";
   ctx.fillRect(car.x,car.y,car.w,car.h);
 
-  // obstacles
   obstacles.forEach((o,i)=>{
     o.y += o.speed;
     ctx.fillRect(o.x,o.y,o.w,o.h);
 
-    // collision
+    // collision with padding (not too strict)
     if(
-      car.x < o.x+o.w &&
-      car.x+car.w > o.x &&
-      car.y < o.y+o.h &&
-      car.y+car.h > o.y
+      car.x < o.x+o.w-5 &&
+      car.x+car.w > o.x+5 &&
+      car.y < o.y+o.h-5 &&
+      car.y+car.h > o.y+5
     ){
-      alert("crash!");
       obstacles=[];
+      alert("crash!");
     }
 
     if(o.y>canvas.height) obstacles.splice(i,1);
@@ -383,20 +381,15 @@ function updateCar(){
 }
 
 /* ======================
-   MEMORY STROBE GAME
+   MEMORY STROBE GAME (FIXED)
 ====================== */
 const strobeBtn = document.getElementById("strobe-btn");
-let strobeSequence = [];
-let userSequence = [];
-let flashing = false;
+let sequence = [];
+let userIndex = 0;
+let showing = false;
 
-strobeBtn.addEventListener("click", startStrobe);
-
-function startStrobe(){
-  strobeSequence = [];
-  userSequence = [];
-  for(let i=0;i<4;i++) strobeSequence.push(Math.floor(Math.random()*4));
-  playStrobe();
+function initStrobe(){
+  strobeBtn.addEventListener("click", startStrobe);
 }
 
 function flash(color, time){
@@ -404,15 +397,39 @@ function flash(color, time){
   return new Promise(res=>setTimeout(res,time));
 }
 
-async function playStrobe(){
-  flashing = true;
-  for(let i of strobeSequence){
-    await flash(i%2===0?"#000":"#fff",300);
+async function startStrobe(){
+  sequence = [];
+  userIndex = 0;
+  for(let i=0;i<4;i++) sequence.push(Math.floor(Math.random()*2));
+  showing = true;
+
+  for(let i of sequence){
+    await flash(i===0?"#000":"#fff",300);
     await flash("#fff",200);
   }
-  flashing = false;
+
+  showing = false;
   document.body.style.background = "#fff";
-  alert("now repeat by clicking the button sequence (not implemented fully)");
+  strobeBtn.textContent = "repeat pattern (click)";
+
+  strobeBtn.onclick = checkStrobe;
+}
+
+function checkStrobe(){
+  if(showing) return;
+
+  let guess = userIndex % 2; // simple toggle
+  if(guess === sequence[userIndex]){
+    userIndex++;
+    if(userIndex >= sequence.length){
+      alert("good job!");
+      strobeBtn.textContent = "start";
+      strobeBtn.onclick = startStrobe;
+    }
+  } else {
+    alert("wrong pattern");
+    userIndex = 0;
+  }
 }
 
 </script>
