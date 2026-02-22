@@ -57,24 +57,6 @@ body{
 .tile.active{
   background:#000;
 }
-
-/* car game */
-#car-section{
-  margin:20px auto;
-  max-width:600px;
-  padding:15px;
-  border:1px solid #000;
-}
-
-#car-canvas{
-  width:100%;
-  max-width:300px;
-  height:200px;
-  background:#ddd;
-  display:block;
-  margin:0 auto;
-  touch-action:none;
-}
 </style>
 </head>
 
@@ -122,13 +104,6 @@ i feel like i’m in between versions of myself… not who i was, not who i’m 
   <div class="tile" data-id="3"></div>
 </div>
 <button id="start-memory">start</button>
-</div>
-
-<!-- car game -->
-<div id="car-section">
-<h2>8bit car</h2>
-<canvas id="car-canvas" width="300" height="200"></canvas>
-<p>touch left / right to move</p>
 </div>
 
 <script>
@@ -217,74 +192,6 @@ tiles.forEach(tile=>{
     }
   });
 });
-
-/* car game (mobile) */
-const canvas=document.getElementById("car-canvas");
-const ctx=canvas.getContext("2d");
-
-let car={x:130,y:140,w:40,h:40};
-let obstacles=[];
-let touchX=null;
-
-/* touch controls */
-canvas.addEventListener("touchstart",e=>{
-  touchX=e.touches[0].clientX;
-});
-canvas.addEventListener("touchmove",e=>{
-  if(touchX===null) return;
-  let dx=e.touches[0].clientX-touchX;
-  car.x += dx>0 ? 5 : -5;
-  touchX=e.touches[0].clientX;
-});
-canvas.addEventListener("touchend",()=>touchX=null);
-
-/* spawn obstacles */
-function spawn(){
-  obstacles.push({
-    x:Math.random()*(canvas.width-40),
-    y:-40,
-    w:40,
-    h:40,
-    speed:2
-  });
-}
-setInterval(spawn,2000);
-
-/* game loop */
-function update(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-
-  // road
-  ctx.fillStyle="#ddd";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  // keep car in bounds
-  car.x=Math.max(0,Math.min(canvas.width-car.w,car.x));
-
-  // draw car
-  ctx.fillStyle="#000";
-  ctx.fillRect(car.x,car.y,car.w,car.h);
-
-  // obstacles
-  obstacles.forEach((o,i)=>{
-    o.y+=o.speed;
-    ctx.fillRect(o.x,o.y,o.w,o.h);
-
-    if(
-      car.x < o.x+o.w &&
-      car.x+car.w > o.x &&
-      car.y < o.y+o.h &&
-      car.y+car.h > o.y
-    ){
-      obstacles=[];
-    }
-
-    if(o.y>canvas.height) obstacles.splice(i,1);
-  });
-
-  requestAnimationFrame(update);
-}
-update();
 </script>
 
 </body>
