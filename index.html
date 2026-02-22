@@ -8,21 +8,65 @@
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
 
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
   font-family:'Chivo',sans-serif;
   background:#fff;
   color:#000;
   text-align:center;
-  overflow-x:hidden;
   text-transform:lowercase;
+  overflow-x:hidden;
 }
 
-/* HERO */
+/* LOADING SCREEN */
+#loading-screen{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:9999;
+}
+
+.loading-text{
+  font-size:1.5em;
+  font-weight:900;
+}
+
+.dots{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+
+.dot{
+  width:8px;
+  height:8px;
+  background:#000;
+  opacity:0;
+  animation:fade 1.5s infinite;
+}
+
+.dot:nth-child(1){animation-delay:0s;}
+.dot:nth-child(2){animation-delay:.3s;}
+.dot:nth-child(3){animation-delay:.6s;}
+
+@keyframes fade{
+  0%{opacity:0;}
+  50%{opacity:1;}
+  100%{opacity:0;}
+}
+
+/* MAIN SITE */
+#site{
+  display:none;
+}
+
 .hero{
   padding:60px 20px;
-  transition:transform 0.3s ease;
 }
 
 .hero img{
@@ -31,100 +75,73 @@ body{
   border-radius:8px;
 }
 
-/* DEPTH CONTAINER */
+.hero h1{
+  margin:25px 0 10px;
+  font-size:2.5em;
+  font-weight:900;
+}
+
 .files-container{
   position:relative;
   width:100%;
-  height:420px;
+  height:450px;
   margin-top:40px;
-  perspective:1200px;
 }
 
-/* FOLDERS */
 .file{
-  width:120px;
+  width:130px;
   padding:15px;
   background:#000;
   color:#fff;
   position:absolute;
   cursor:grab;
   font-weight:700;
-  font-size:0.9em;
-  box-shadow:8px 8px 0 rgba(0,0,0,0.25);
-  transform-style:preserve-3d;
-  transition:transform 0.2s ease;
+  font-size:.9em;
+  box-shadow:3px 3px 0 #000;
 }
 
-.file.depth-1{ transform:translateZ(20px); }
-.file.depth-2{ transform:translateZ(60px); }
-.file.depth-3{ transform:translateZ(120px); }
-
-.file:active{
-  transform:scale(1.05) translateZ(140px);
-}
-
-/* SECTIONS */
+/* hidden sections */
 .section{
   display:none;
   margin:60px auto;
   max-width:95%;
-  padding:20px;
+  padding:25px;
   border:1px solid #000;
 }
 
-.memory-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:15px;
-}
-
-.memory-square{
-  height:70px;
-  background:#eee;
-  border:1px solid #000;
-}
-
-.memory-square.active{
-  background:#000;
-}
-
-canvas{
-  background:#eee;
-  border:1px solid #000;
-  width:100%;
-  max-width:320px;
-}
-
-.controls{
-  margin-top:15px;
-  display:flex;
-  justify-content:center;
-  gap:20px;
-}
-
-.control-btn{
-  padding:15px 25px;
-  background:#000;
-  color:#fff;
-  border:none;
-  font-weight:700;
+/* pixel cryptic text */
+.pixel-text{
+  font-size:.85em;
+  line-height:1.6em;
+  letter-spacing:.5px;
+  text-shadow:1px 0 #000,0 1px #000;
 }
 
 footer{
   margin:60px 0 20px;
-  font-size:0.8em;
-  opacity:0.6;
+  font-size:.8em;
+  opacity:.6;
 }
 </style>
 </head>
 
 <body>
 
-<audio id="glassSound" src="glass.mp3"></audio>
+<!-- LOADING SCREEN -->
+<div id="loading-screen">
+  <div class="loading-text">loading</div>
+  <div class="dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
+<!-- MAIN SITE -->
+<div id="site">
 
 <div class="hero">
-  <img src="cover.jpg" alt="cover">
+  <img src="cover.jpg">
   <h1>overexposed</h1>
   <p>experience it. catch the moments.</p>
 </div>
@@ -133,196 +150,67 @@ footer{
   <div class="file" id="music-file">music</div>
   <div class="file" id="memory-file">memory game</div>
   <div class="file" id="car-file">car challenge</div>
+  <div class="file" id="definition-file">definition</div>
 </div>
 
-<div class="section" id="memory-section">
-  <h2>strobe memory game</h2>
-  <p>flashing lights — viewer discretion advised</p>
-  <div class="memory-grid">
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-    <div class="memory-square"></div>
-  </div>
-</div>
-
-<div class="section" id="car-section">
-  <h2>8-bit car challenge</h2>
-  <canvas id="carCanvas" width="300" height="400"></canvas>
-  <div class="controls">
-    <button class="control-btn" id="leftBtn">left</button>
-    <button class="control-btn" id="rightBtn">right</button>
-  </div>
+<div class="section" id="definition-section">
+  <p class="pixel-text">
+  the state of being subjected to an excessive amount of attention, stimulus, or light, such that the capacity for perception, endurance, or appreciation is overwhelmed, distorted, or diminished. literally, in photography or visual media, this occurs when too much light reaches the film or sensor, resulting in washed-out images where highlights lose definition and subtlety is erased. details once sharp and meaningful become flat, overstated, or invisible altogether. metaphorically and psychologically, it describes the phenomenon of being excessively visible or scrutinized, whether socially, emotionally, or culturally, often producing feelings of vulnerability, fatigue, or alienation. in human experience, it can manifest as the relentless pressure of public attention, the emotional exhaustion of sharing too much of oneself, or the corrosive effect of constant sensory or informational bombardment. this state can lead to erasure of nuance, where individual complexity is flattened by the sheer intensity of observation or interaction, producing a paradoxical invisibility within hypervisibility. it carries connotations of risk, fragility, and loss of control, highlighting the tension between the desire to be seen and the dangers inherent in being seen too much. in artistic contexts such as music, photography, or film, it can be explored as a thematic device, representing vulnerability, emotional saturation, and the collision between intimacy and spectacle, often inviting reflection on authenticity, perception, and the limits of endurance under scrutiny.
+  </p>
 </div>
 
 <footer>
   © 2026 aussie
 </footer>
 
+</div>
+
 <script>
-document.addEventListener("DOMContentLoaded",function(){
 
-const glass=document.getElementById("glassSound");
-function playGlass(){
-  glass.currentTime=0;
-  glass.play();
-}
+/* 3 SECOND LOADING */
+window.addEventListener("load",()=>{
+  setTimeout(()=>{
+    document.getElementById("loading-screen").style.display="none";
+    document.getElementById("site").style.display="block";
+    scatter();
+  },3000);
+});
 
-/* RANDOM SCATTER + DEPTH */
-const container=document.querySelector(".files-container");
-const files=document.querySelectorAll(".file");
-
+/* RANDOM SCATTER */
 function scatter(){
+  const container=document.querySelector(".files-container");
+  const files=document.querySelectorAll(".file");
+
   const cw=container.offsetWidth;
   const ch=container.offsetHeight;
-  const depths=["depth-1","depth-2","depth-3"];
 
   files.forEach(file=>{
     const maxX=cw-file.offsetWidth;
     const maxY=ch-file.offsetHeight;
     file.style.left=Math.random()*maxX+"px";
     file.style.top=Math.random()*maxY+"px";
-
-    file.classList.remove("depth-1","depth-2","depth-3");
-    file.classList.add(depths[Math.floor(Math.random()*3)]);
   });
 }
-scatter();
 
-/* PARALLAX */
-document.addEventListener("mousemove",e=>{
-  const x=(e.clientX/window.innerWidth-0.5)*10;
-  const y=(e.clientY/window.innerHeight-0.5)*10;
+/* TOGGLE */
+document.addEventListener("click",function(e){
+  if(!e.target.classList.contains("file")) return;
 
-  files.forEach(file=>{
-    file.style.transform+=` rotateY(${x}deg) rotateX(${-y}deg)`;
-  });
+  if(e.target.id==="music-file"){
+    window.open("https://linktr.ee/vegemiteloverr","_blank");
+  }
 
-  document.querySelector(".hero").style.transform=
-  `rotateY(${x/2}deg) rotateX(${-y/2}deg)`;
-});
-
-/* DRAG + CLICK */
-files.forEach(file=>{
-  let offsetX,offsetY,drag=false,moved=false;
-
-  file.addEventListener("mousedown",e=>{
-    drag=true; moved=false;
-    offsetX=e.offsetX;
-    offsetY=e.offsetY;
-  });
-
-  document.addEventListener("mousemove",e=>{
-    if(!drag) return;
-    moved=true;
-    file.style.left=(e.pageX-offsetX)+"px";
-    file.style.top=(e.pageY-offsetY)+"px";
-  });
-
-  document.addEventListener("mouseup",()=>drag=false);
-
-  file.addEventListener("click",()=>{
-    if(moved) return;
-
-    playGlass();
-
-    if(file.id==="music-file"){
-      window.open("https://linktr.ee/vegemiteloverr","_blank");
-    }
-
-    if(file.id==="memory-file"){
-      toggle("memory-section");
-    }
-
-    if(file.id==="car-file"){
-      toggle("car-section");
-    }
-  });
+  if(e.target.id==="definition-file"){
+    toggle("definition-section");
+  }
 });
 
 function toggle(id){
   const section=document.getElementById(id);
-  section.style.display=
-    section.style.display==="block"?"none":"block";
+  section.style.display =
+    section.style.display==="block" ? "none" : "block";
 }
 
-/* MEMORY GAME */
-const squares=document.querySelectorAll(".memory-square");
-let sequence=[],player=[];
-
-function next(){
-  sequence.push(Math.floor(Math.random()*9));
-  flash();
-}
-
-function flash(){
-  player=[];
-  let i=0;
-  const interval=setInterval(()=>{
-    squares.forEach(s=>s.classList.remove("active"));
-    if(i<sequence.length){
-      squares[sequence[i]].classList.add("active");
-      i++;
-    }else clearInterval(interval);
-  },500);
-}
-
-squares.forEach((sq,i)=>{
-  sq.addEventListener("click",()=>{
-    player.push(i);
-    if(player[player.length-1]!==sequence[player.length-1]){
-      playGlass();
-      sequence=[];
-      setTimeout(next,1000);
-      return;
-    }
-    if(player.length===sequence.length){
-      setTimeout(next,800);
-    }
-  });
-});
-
-next();
-
-/* CAR GAME */
-const canvas=document.getElementById("carCanvas");
-const ctx=canvas.getContext("2d");
-let carX=130, obstacles=[];
-
-document.getElementById("leftBtn").onclick=()=>carX-=20;
-document.getElementById("rightBtn").onclick=()=>carX+=20;
-
-function loop(){
-  ctx.clearRect(0,0,300,400);
-
-  ctx.fillStyle="#000";
-  ctx.fillRect(carX,350,40,40);
-
-  if(Math.random()<0.02){
-    obstacles.push({x:Math.random()*260,y:0});
-  }
-
-  obstacles.forEach(o=>{
-    o.y+=4;
-    ctx.fillRect(o.x,o.y,40,20);
-
-    if(o.y>330 && o.x<carX+40 && o.x+40>carX){
-      playGlass();
-      obstacles=[];
-    }
-  });
-
-  obstacles=obstacles.filter(o=>o.y<400);
-  requestAnimationFrame(loop);
-}
-loop();
-
-});
 </script>
 
 </body>
