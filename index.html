@@ -16,6 +16,15 @@ body{
   text-align:center;
   text-transform:lowercase;
   overflow-x:hidden;
+  perspective:1200px;
+}
+
+.background-layer{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(180deg,#fff 0%,#f3f3f3 100%);
+  z-index:-1;
+  transform:translateZ(-200px) scale(1.3);
 }
 
 #loading-screen{
@@ -40,7 +49,11 @@ body{
 
 #site{display:none;}
 
-.hero{padding:60px 20px;}
+.hero{
+  padding:60px 20px;
+  transform:translateZ(40px);
+  transition:transform 0.2s ease;
+}
 
 .volume-note{
   font-size:.8em;
@@ -53,6 +66,8 @@ body{
   width:100%;
   height:520px;
   margin-top:40px;
+  perspective:1200px;
+  transform-style:preserve-3d;
 }
 
 .file{
@@ -66,6 +81,13 @@ body{
   font-size:.9em;
   box-shadow:3px 3px 0 #000;
   touch-action:none;
+  transform-style:preserve-3d;
+  transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.file:hover{
+  transform:translateZ(50px) scale(1.03);
+  box-shadow:8px 8px 0 #000;
 }
 
 .section{
@@ -74,6 +96,7 @@ body{
   max-width:95%;
   padding:25px;
   border:1px solid #000;
+  background:#fff;
 }
 
 .game{
@@ -96,6 +119,8 @@ footer{
 <audio id="bg-music" autoplay loop playsinline>
   <source src="trustme.mp3" type="audio/mpeg">
 </audio>
+
+<div class="background-layer"></div>
 
 <div id="loading-screen">
   <div class="loading-text">loading...</div>
@@ -125,8 +150,18 @@ footer{
 </div>
 
 <div class="section" id="games-section">
-  <div class="game" onclick="window.open('https://example.com','_blank')">memory glitch</div>
-  <div class="game" onclick="window.open('https://example.com','_blank')">reaction test</div>
+  <div class="game" onclick="window.open('https://example.com/car-game','_blank')">
+    car game
+  </div>
+  <div class="game" onclick="window.open('https://example.com/memory-game','_blank')">
+    memory game
+  </div>
+  <div class="game" onclick="window.open('https://example.com','_blank')">
+    memory glitch
+  </div>
+  <div class="game" onclick="window.open('https://example.com','_blank')">
+    reaction test
+  </div>
 </div>
 
 <footer>
@@ -164,7 +199,7 @@ window.addEventListener("load",()=>{
   },2500);
 });
 
-/* random scatter */
+/* random scatter with depth */
 function scatter(){
   const container=document.querySelector(".files-container");
   const files=document.querySelectorAll(".file");
@@ -172,8 +207,11 @@ function scatter(){
   const ch=container.offsetHeight;
 
   files.forEach(file=>{
+    const depth = Math.random()*100;
     file.style.left=Math.random()*(cw-file.offsetWidth)+"px";
     file.style.top=Math.random()*(ch-file.offsetHeight)+"px";
+    file.style.transform=`translateZ(${depth}px)`;
+    file.dataset.depth = depth;
   });
 }
 
@@ -186,6 +224,7 @@ document.querySelectorAll(".file").forEach(file=>{
     offsetX=e.clientX-file.offsetLeft;
     offsetY=e.clientY-file.offsetTop;
     file.setPointerCapture(e.pointerId);
+    file.style.transition="none";
   });
 
   file.addEventListener("pointermove",(e)=>{
@@ -194,7 +233,10 @@ document.querySelectorAll(".file").forEach(file=>{
     file.style.top=(e.clientY-offsetY)+"px";
   });
 
-  file.addEventListener("pointerup",()=>{isDragging=false;});
+  file.addEventListener("pointerup",()=>{
+    isDragging=false;
+    file.style.transition="transform 0.2s ease";
+  });
 });
 
 /* toggles */
@@ -223,6 +265,13 @@ function toggle(id){
   section.style.display =
     section.style.display==="block"?"none":"block";
 }
+
+/* parallax depth on scroll */
+window.addEventListener("scroll",()=>{
+  const sc = window.scrollY;
+  document.querySelector(".hero").style.transform =
+    `translateZ(${40 + sc*0.03}px)`;
+});
 
 </script>
 
