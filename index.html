@@ -5,12 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>overexposed</title>
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
+
 <style>
 body{
   font-family:'Chivo',sans-serif;
   text-align:center;
   background:white;
 }
+
+/* loading */
+#loading{
+  position:fixed;
+  inset:0;
+  background:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* site hidden until load */
+#site{display:none;}
 
 /* folders */
 .files-container{
@@ -29,7 +43,6 @@ body{
 .file::before{
   content:"📁";
   display:block;
-  font-size:24px;
 }
 
 /* sections */
@@ -55,41 +68,76 @@ canvas, .file{
 }
 </style>
 </head>
+
 <body>
 
+<div id="loading">loading</div>
+
+<div id="site">
+
+<!-- music -->
+<audio id="bg-music" loop>
+  <source src="trustme.mp3" type="audio/mpeg">
+</audio>
+
+<div class="hero">
+  <h1>overexposed</h1>
+  <p>experience it. catch the moments.</p>
+</div>
+
+<!-- folders -->
 <div class="files-container">
-  <div class="file" id="music-file">music</div>
   <div class="file" id="definition-file">definition</div>
   <div class="file" id="feelings-file">my feelings</div>
   <div class="file" id="car-game-file">8bit car</div>
-  <div class="file" id="strobe-game-file">memory strobe</div>
+  <div class="file" id="strobe-file">memory strobe</div>
 </div>
 
+<!-- definition -->
 <div class="section" id="definition-section">
 <p>
 the state of being overwhelmed by too much light or attention, where detail disappears and things feel washed out.
 </p>
 </div>
 
+<!-- feelings -->
 <div class="section" id="feelings-section">
 <p>
 i feel like i’m in between versions of myself… not who i was, not who i’m becoming yet.
 </p>
 </div>
 
+<!-- car game -->
 <div class="game-section" id="car-section">
 <h2>8bit car</h2>
 <canvas id="car-canvas" width="400" height="250"></canvas>
-<p>arrow keys or swipe to move</p>
+<p>arrow keys or swipe</p>
 </div>
 
+<!-- memory game -->
 <div class="game-section" id="strobe-section">
 <h2>memory strobe</h2>
-<p>repeat the flash pattern</p>
+<p>repeat the pattern</p>
 <button id="strobe-btn">start</button>
 </div>
 
+</div>
+
 <script>
+/* load */
+window.onload=()=>{
+  document.getElementById("loading").style.display="none";
+  document.getElementById("site").style.display="block";
+  scatter();
+  initCar();
+};
+
+/* music (play on click) */
+const music=document.getElementById("bg-music");
+document.body.addEventListener("click",()=>{
+  music.play().catch(()=>{});
+},{once:true});
+
 /* scatter folders */
 function scatter(){
   const cont=document.querySelector(".files-container");
@@ -99,7 +147,6 @@ function scatter(){
     f.style.top=Math.random()*(cont.offsetHeight-80)+"px";
   });
 }
-window.onload=scatter;
 
 /* drag folders */
 document.querySelectorAll(".file").forEach(file=>{
@@ -124,7 +171,7 @@ document.addEventListener("click",e=>{
   if(e.target.id==="definition-file") toggle("definition-section");
   if(e.target.id==="feelings-file") toggle("feelings-section");
   if(e.target.id==="car-game-file") toggle("car-section");
-  if(e.target.id==="strobe-game-file") toggle("strobe-section");
+  if(e.target.id==="strobe-file") toggle("strobe-section");
 });
 
 function toggle(id){
@@ -132,7 +179,7 @@ function toggle(id){
   s.style.display = s.style.display==="block" ? "none" : "block";
 }
 
-/* car game */
+/* ================= CAR GAME ================= */
 const canvas=document.getElementById("car-canvas");
 const ctx=canvas.getContext("2d");
 let car={x:180,y:180,w:40,h:40,speed:5};
@@ -170,16 +217,15 @@ function update(){
       car.y+car.h > o.y
     ){
       obs=[];
-      alert("crash");
     }
     if(o.y>canvas.height) obs.splice(i,1);
   });
 
   requestAnimationFrame(update);
 }
-update();
+function initCar(){ update(); }
 
-/* memory strobe */
+/* ============== MEMORY GAME ============== */
 const btn=document.getElementById("strobe-btn");
 let seq=[],pos=0,showing=false;
 
@@ -213,7 +259,6 @@ btn.addEventListener("click",()=>{
       pos=0;
     }
   } else {
-    alert("wrong");
     pos=0;
   }
 });
