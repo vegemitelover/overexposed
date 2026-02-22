@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>overexposed</title>
-<link rel="icon" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
 
 <style>
@@ -19,7 +18,6 @@ body{
   overflow-x:hidden;
 }
 
-/* LOADING SCREEN */
 #loading-screen{
   position:fixed;
   inset:0;
@@ -38,61 +36,27 @@ body{
   100%{opacity:1;}
 }
 
-.loading-text{
-  font-size:1.5em;
-  font-weight:900;
-}
+.loading-text{font-weight:900;}
 
-.dots{
-  display:flex;
-  gap:8px;
-  margin-top:10px;
-}
-
-.dot{
-  width:8px;
-  height:8px;
-  background:#000;
-  opacity:0;
-  animation:fade 1.5s infinite;
-}
-
-.dot:nth-child(1){animation-delay:0s;}
-.dot:nth-child(2){animation-delay:.3s;}
-.dot:nth-child(3){animation-delay:.6s;}
-
-@keyframes fade{
-  0%{opacity:0;}
-  50%{opacity:1;}
-  100%{opacity:0;}
-}
-
-/* SITE */
 #site{display:none;}
 
 .hero{padding:60px 20px;}
 
-.hero img{
-  width:180px;
-  max-width:70%;
-  border-radius:8px;
-}
-
-.hero h1{
-  margin:25px 0 10px;
-  font-size:2.5em;
-  font-weight:900;
+.volume-note{
+  font-size:.8em;
+  opacity:.6;
+  margin-top:10px;
 }
 
 .files-container{
   position:relative;
   width:100%;
-  height:500px;
+  height:520px;
   margin-top:40px;
 }
 
 .file{
-  width:150px;
+  width:160px;
   padding:15px;
   background:#000;
   color:#fff;
@@ -104,7 +68,6 @@ body{
   touch-action:none;
 }
 
-/* SECTIONS */
 .section{
   display:none;
   margin:60px auto;
@@ -113,21 +76,11 @@ body{
   border:1px solid #000;
 }
 
-.pixel-text{
-  font-size:.85em;
-  line-height:1.6em;
-  text-shadow:1px 0 #000,0 1px #000;
-}
-
-/* hidden secret */
-.secret{
-  color:#fff;
-  user-select:text;
-}
-
-.secret::selection{
-  background:#000;
-  color:#fff;
+.game{
+  margin:15px 0;
+  padding:12px;
+  border:1px solid #000;
+  cursor:pointer;
 }
 
 footer{
@@ -140,56 +93,40 @@ footer{
 
 <body>
 
-<!-- BACKGROUND MUSIC -->
-<audio id="bg-music" loop playsinline>
+<audio id="bg-music" autoplay loop playsinline>
   <source src="trustme.mp3" type="audio/mpeg">
 </audio>
 
-<!-- LOADING SCREEN -->
 <div id="loading-screen">
-  <div class="loading-text">loading</div>
-  <div class="dots">
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-  </div>
+  <div class="loading-text">loading...</div>
 </div>
 
 <div id="site">
 
 <div class="hero">
-  <img src="cover.jpg">
   <h1>overexposed</h1>
-  <p>experience it. catch the moments.</p>
+  <div class="volume-note">turn your volume up.</div>
 </div>
 
 <div class="files-container">
   <div class="file" id="music-file">music</div>
   <div class="file" id="definition-file">definition</div>
   <div class="file" id="feelings-file">my feelings</div>
+  <div class="file" id="games-file">games</div>
 </div>
 
 <div class="section" id="definition-section">
-  <p class="pixel-text">
-  the state of being subjected to an excessive amount of attention, stimulus, or light, such that perception becomes overwhelmed and detail is lost. in visual media, it occurs when too much light reaches a sensor, washing out nuance and flattening depth. metaphorically, it describes the exhaustion of being constantly seen or scrutinized. it represents vulnerability, saturation, and the tension between wanting to be visible and fearing what visibility costs.
-  <span class="secret">4/10</span>
-  </p>
+  overexposed means too much light, too much attention, too much visibility.
+  <span style="color:#fff;">4/10</span>
 </div>
 
 <div class="section" id="feelings-section">
-  <p class="pixel-text">
-  i feel like i’m in between versions of myself.
+  (your full paragraph text here)
+</div>
 
-  like i’m not who i was, but i’m not who i’m trying to become yet either. i wake up and everything feels kind of heavy, not in a dramatic way, just in a constant, low hum kind of way. i feel things too much. a small shift in someone’s tone can ruin my whole day. a good hangout can make me feel alive, and then the quiet after makes me feel empty. it’s like my emotions don’t have a dimmer switch. they’re either glowing or completely dark.
-
-  i want to be chosen. not casually liked. not “you’re cool.” i want to be seen. i want someone to look at me and know i’m different in a way that matters. but i’m scared i care more than people care about me. when something doesn’t work out, it doesn’t just feel like rejection. it feels like confirmation of my worst fear, that i’m always almost enough.
-
-  i’m scared of growing up. i’m scared of becoming normal. i’m scared that one day i’ll look back at this version of me, the one who believes he could make something iconic, and realize i let it slip away. but i’m also tired. tired of overthinking every interaction. tired of replaying conversations. tired of feeling like my heart is always slightly exposed.
-
-  at the same time, i know there’s something in me. when i write, it feels like i’m tapping into a part of myself that’s deeper than all this noise. like there’s a frequency underneath everything, and i can hear it. but i don’t fully know how to live in it yet.
-
-  mostly, i feel like i’m trying really hard to become someone unforgettable, while secretly being afraid i’ll be forgotten.
-  </p>
+<div class="section" id="games-section">
+  <div class="game" onclick="window.open('https://example.com','_blank')">memory glitch</div>
+  <div class="game" onclick="window.open('https://example.com','_blank')">reaction test</div>
 </div>
 
 <footer>
@@ -200,30 +137,34 @@ footer{
 
 <script>
 
-/* BACKGROUND MUSIC (MOBILE SAFE AUTOPLAY) */
 const bgMusic = document.getElementById("bg-music");
-bgMusic.volume = 0.5;
+bgMusic.volume = 0;
 bgMusic.muted = true;
 
-window.addEventListener("load", () => {
-  bgMusic.play().catch(()=>{});
-});
-
-document.addEventListener("click", () => {
+/* fade in music on first interaction */
+function startMusic(){
   bgMusic.muted = false;
-  bgMusic.play().catch(()=>{});
-}, { once:true });
+  let fade = setInterval(()=>{
+    if(bgMusic.volume < 0.5){
+      bgMusic.volume += 0.05;
+    } else {
+      clearInterval(fade);
+    }
+  },200);
+}
 
-/* LOADING DELAY */
+document.addEventListener("click", startMusic, { once:true });
+
 window.addEventListener("load",()=>{
+  bgMusic.play().catch(()=>{});
   setTimeout(()=>{
     document.getElementById("loading-screen").style.display="none";
     document.getElementById("site").style.display="block";
     scatter();
-  },3000);
+  },2500);
 });
 
-/* RANDOM SCATTER */
+/* random scatter */
 function scatter(){
   const container=document.querySelector(".files-container");
   const files=document.querySelectorAll(".file");
@@ -236,7 +177,7 @@ function scatter(){
   });
 }
 
-/* DRAGGING (MOBILE + DESKTOP) */
+/* dragging */
 document.querySelectorAll(".file").forEach(file=>{
   let offsetX, offsetY, isDragging=false;
 
@@ -253,12 +194,10 @@ document.querySelectorAll(".file").forEach(file=>{
     file.style.top=(e.clientY-offsetY)+"px";
   });
 
-  file.addEventListener("pointerup",()=>{
-    isDragging=false;
-  });
+  file.addEventListener("pointerup",()=>{isDragging=false;});
 });
 
-/* CLICK BEHAVIOR */
+/* toggles */
 document.addEventListener("click",function(e){
   if(!e.target.classList.contains("file")) return;
 
@@ -273,11 +212,15 @@ document.addEventListener("click",function(e){
   if(e.target.id==="feelings-file"){
     toggle("feelings-section");
   }
+
+  if(e.target.id==="games-file"){
+    toggle("games-section");
+  }
 });
 
 function toggle(id){
   const section=document.getElementById(id);
-  section.style.display=
+  section.style.display =
     section.style.display==="block"?"none":"block";
 }
 
