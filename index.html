@@ -52,7 +52,15 @@ body{
   border:1px solid #000;
 }
 
-/* memory game grid (visible on mobile & desktop) */
+/* definition */
+#definition-section p{
+  margin-bottom:10px;
+}
+#definition-section .easter{
+  font-weight:900;
+}
+
+/* memory game */
 #memory-grid{
   display:grid;
   grid-template-columns:repeat(2,100px);
@@ -73,9 +81,12 @@ body{
 /* car game */
 #car-canvas{
   width:100%;
-  max-width:400px;
-  height:250px;
+  max-width:300px;
+  height:200px;
   background:#ddd;
+  display:block;
+  margin:0 auto;
+  touch-action:none;
 }
 
 /* mobile */
@@ -112,8 +123,8 @@ canvas, .file{
 <div class="section" id="definition-section">
 <p>
 the state of being overwhelmed by too much light or attention, where detail disappears and things feel washed out.
-<span style="display:none;">4/10</span>
 </p>
+<p class="easter">4/10</p>
 </div>
 
 <!-- feelings -->
@@ -139,8 +150,8 @@ i feel like i’m in between versions of myself… not who i was, not who i’m 
 <!-- car game -->
 <div class="game-section" id="car-section">
 <h2>8bit car</h2>
-<canvas id="car-canvas" width="400" height="250"></canvas>
-<p>arrow keys or swipe</p>
+<canvas id="car-canvas" width="300" height="200"></canvas>
+<p>touch left / right to move</p>
 </div>
 
 </div>
@@ -255,16 +266,26 @@ tiles.forEach(tile=>{
   });
 });
 
-/* ================= CAR GAME ================= */
+/* ================= CAR GAME (mobile) ================= */
 const canvas=document.getElementById("car-canvas");
 const ctx=canvas.getContext("2d");
-let car={x:180,y:180,w:40,h:40,speed:5};
+let car={x:120,y:120,w:40,h:40,speed:4};
 let obs=[];
-let keys={};
+let touchX=null;
 
-document.addEventListener("keydown",e=>keys[e.key]=true);
-document.addEventListener("keyup",e=>keys[e.key]=false);
+/* touch controls */
+canvas.addEventListener("touchstart",e=>{
+  touchX=e.touches[0].clientX;
+});
+canvas.addEventListener("touchmove",e=>{
+  if(touchX===null) return;
+  let dx=e.touches[0].clientX-touchX;
+  car.x += dx>0 ? car.speed : -car.speed;
+  touchX=e.touches[0].clientX;
+});
+canvas.addEventListener("touchend",()=>touchX=null);
 
+/* spawn obstacles */
 function spawn(){
   obs.push({x:Math.random()*(canvas.width-40),y:-40,w:40,h:40,speed:2});
 }
@@ -275,8 +296,6 @@ function update(){
   ctx.fillStyle="#ddd";
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  if(keys["ArrowLeft"]) car.x-=car.speed;
-  if(keys["ArrowRight"]) car.x+=car.speed;
   car.x=Math.max(0,Math.min(canvas.width-car.w,car.x));
 
   ctx.fillStyle="#000";
