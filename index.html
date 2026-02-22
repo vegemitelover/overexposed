@@ -52,7 +52,7 @@ body{
   border:1px solid #000;
 }
 
-/* memory game tiles */
+/* memory game */
 #memory-grid{
   display:grid;
   grid-template-columns:repeat(2,100px);
@@ -65,10 +65,17 @@ body{
   height:100px;
   background:#ddd;
   border:2px solid #000;
-  cursor:pointer;
 }
 .tile.active{
   background:#000;
+}
+
+/* car game */
+#car-canvas{
+  width:100%;
+  max-width:400px;
+  height:250px;
+  background:#ddd;
 }
 
 /* mobile */
@@ -98,6 +105,7 @@ canvas, .file{
   <div class="file" id="definition-file">definition</div>
   <div class="file" id="feelings-file">my feelings</div>
   <div class="file" id="memory-file">memory game</div>
+  <div class="file" id="car-file">8bit car</div>
 </div>
 
 <!-- definition -->
@@ -128,6 +136,13 @@ i feel like i’m in between versions of myself… not who i was, not who i’m 
 <button id="start-memory">start</button>
 </div>
 
+<!-- car game -->
+<div class="game-section" id="car-section">
+<h2>8bit car</h2>
+<canvas id="car-canvas" width="400" height="250"></canvas>
+<p>arrow keys or swipe to move</p>
+</div>
+
 </div>
 
 <script>
@@ -137,6 +152,7 @@ window.onload=()=>{
   document.getElementById("site").style.display="block";
   scatter();
   initMemory();
+  initCar();
 };
 
 /* music (play on click) */
@@ -178,6 +194,7 @@ document.addEventListener("click",e=>{
   if(e.target.id==="definition-file") toggle("definition-section");
   if(e.target.id==="feelings-file") toggle("feelings-section");
   if(e.target.id==="memory-file") toggle("memory-section");
+  if(e.target.id==="car-file") toggle("car-section");
 });
 
 function toggle(id){
@@ -185,7 +202,7 @@ function toggle(id){
   s.style.display = s.style.display==="block" ? "none" : "block";
 }
 
-/* ============== MEMORY GAME (SIMON STYLE) ============== */
+/* ================= MEMORY GAME (SIMON) ================= */
 const startBtn=document.getElementById("start-memory");
 const tiles=[...document.querySelectorAll(".tile")];
 let sequence=[];
@@ -229,16 +246,60 @@ tiles.forEach(tile=>{
       userIndex++;
       if(userIndex >= sequence.length){
         alert("good job");
-        userIndex=0;
         newGame();
       }
     } else {
       alert("wrong");
-      userIndex=0;
       newGame();
     }
   });
 });
+
+/* ================= CAR GAME ================= */
+const canvas=document.getElementById("car-canvas");
+const ctx=canvas.getContext("2d");
+let car={x:180,y:180,w:40,h:40,speed:5};
+let obs=[];
+let keys={};
+
+document.addEventListener("keydown",e=>keys[e.key]=true);
+document.addEventListener("keyup",e=>keys[e.key]=false);
+
+function spawn(){
+  obs.push({x:Math.random()*(canvas.width-40),y:-40,w:40,h:40,speed:2});
+}
+setInterval(spawn,2000);
+
+function update(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#ddd";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  if(keys["ArrowLeft"]) car.x-=car.speed;
+  if(keys["ArrowRight"]) car.x+=car.speed;
+  car.x=Math.max(0,Math.min(canvas.width-car.w,car.x));
+
+  ctx.fillStyle="#000";
+  ctx.fillRect(car.x,car.y,car.w,car.h);
+
+  obs.forEach((o,i)=>{
+    o.y+=o.speed;
+    ctx.fillRect(o.x,o.y,o.w,o.h);
+
+    if(
+      car.x < o.x+o.w &&
+      car.x+car.w > o.x &&
+      car.y < o.y+o.h &&
+      car.y+car.h > o.y
+    ){
+      obs=[];
+    }
+    if(o.y>canvas.height) obs.splice(i,1);
+  });
+
+  requestAnimationFrame(update);
+}
+function initCar(){ update(); }
 </script>
 
 </body>
