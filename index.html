@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>overexposed</title>
-<link rel="icon" href="favicon.png" type="image/png">
+<link rel="icon" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
 
 <style>
@@ -29,6 +29,13 @@ body{
   justify-content:center;
   flex-direction:column;
   z-index:9999;
+  animation:flicker .15s infinite;
+}
+
+@keyframes flicker{
+  0%{opacity:1;}
+  50%{opacity:.92;}
+  100%{opacity:1;}
 }
 
 .loading-text{
@@ -60,14 +67,10 @@ body{
   100%{opacity:0;}
 }
 
-/* MAIN SITE */
-#site{
-  display:none;
-}
+/* SITE */
+#site{display:none;}
 
-.hero{
-  padding:60px 20px;
-}
+.hero{padding:60px 20px;}
 
 .hero img{
   width:180px;
@@ -84,12 +87,12 @@ body{
 .files-container{
   position:relative;
   width:100%;
-  height:450px;
+  height:500px;
   margin-top:40px;
 }
 
 .file{
-  width:130px;
+  width:140px;
   padding:15px;
   background:#000;
   color:#fff;
@@ -100,7 +103,7 @@ body{
   box-shadow:3px 3px 0 #000;
 }
 
-/* hidden sections */
+/* SECTIONS */
 .section{
   display:none;
   margin:60px auto;
@@ -109,12 +112,21 @@ body{
   border:1px solid #000;
 }
 
-/* pixel cryptic text */
 .pixel-text{
   font-size:.85em;
   line-height:1.6em;
-  letter-spacing:.5px;
   text-shadow:1px 0 #000,0 1px #000;
+}
+
+/* hidden secret */
+.secret{
+  color:#fff;
+  user-select:text;
+}
+
+.secret::selection{
+  background:#000;
+  color:#fff;
 }
 
 footer{
@@ -127,7 +139,6 @@ footer{
 
 <body>
 
-<!-- LOADING SCREEN -->
 <div id="loading-screen">
   <div class="loading-text">loading</div>
   <div class="dots">
@@ -137,7 +148,6 @@ footer{
   </div>
 </div>
 
-<!-- MAIN SITE -->
 <div id="site">
 
 <div class="hero">
@@ -148,14 +158,30 @@ footer{
 
 <div class="files-container">
   <div class="file" id="music-file">music</div>
-  <div class="file" id="memory-file">memory game</div>
-  <div class="file" id="car-file">car challenge</div>
   <div class="file" id="definition-file">definition</div>
+  <div class="file" id="feelings-file">my feelings</div>
 </div>
 
 <div class="section" id="definition-section">
   <p class="pixel-text">
   the state of being subjected to an excessive amount of attention, stimulus, or light, such that the capacity for perception, endurance, or appreciation is overwhelmed, distorted, or diminished. literally, in photography or visual media, this occurs when too much light reaches the film or sensor, resulting in washed-out images where highlights lose definition and subtlety is erased. details once sharp and meaningful become flat, overstated, or invisible altogether. metaphorically and psychologically, it describes the phenomenon of being excessively visible or scrutinized, whether socially, emotionally, or culturally, often producing feelings of vulnerability, fatigue, or alienation. in human experience, it can manifest as the relentless pressure of public attention, the emotional exhaustion of sharing too much of oneself, or the corrosive effect of constant sensory or informational bombardment. this state can lead to erasure of nuance, where individual complexity is flattened by the sheer intensity of observation or interaction, producing a paradoxical invisibility within hypervisibility. it carries connotations of risk, fragility, and loss of control, highlighting the tension between the desire to be seen and the dangers inherent in being seen too much. in artistic contexts such as music, photography, or film, it can be explored as a thematic device, representing vulnerability, emotional saturation, and the collision between intimacy and spectacle, often inviting reflection on authenticity, perception, and the limits of endurance under scrutiny.
+  <span class="secret">4/10</span>
+  </p>
+</div>
+
+<div class="section" id="feelings-section">
+  <p class="pixel-text">
+  i feel like i’m in between versions of myself.
+
+  like i’m not who i was, but i’m not who i’m trying to become yet either. i wake up and everything feels kind of heavy, not in a dramatic way, just in a constant, low hum kind of way. i feel things too much. a small shift in someone’s tone can ruin my whole day. a good hangout can make me feel alive, and then the quiet after makes me feel empty. it’s like my emotions don’t have a dimmer switch. they’re either glowing or completely dark.
+
+  i want to be chosen. not casually liked. not “you’re cool.” i want to be seen. i want someone to look at me and know i’m different in a way that matters. but i’m scared i care more than people care about me. when something doesn’t work out, it doesn’t just feel like rejection. it feels like confirmation of my worst fear, that i’m always almost enough.
+
+  i’m scared of growing up. i’m scared of becoming normal. i’m scared that one day i’ll look back at this version of me, the one who believes he could make something iconic, and realize i let it slip away. but i’m also tired. tired of overthinking every interaction. tired of replaying conversations. tired of feeling like my heart is always slightly exposed.
+
+  at the same time, i know there’s something in me. when i write, it feels like i’m tapping into a part of myself that’s deeper than all this noise. like there’s a frequency underneath everything, and i can hear it. but i don’t fully know how to live in it yet.
+
+  mostly, i feel like i’m trying really hard to become someone unforgettable, while secretly being afraid i’ll be forgotten.
   </p>
 </div>
 
@@ -167,7 +193,7 @@ footer{
 
 <script>
 
-/* 3 SECOND LOADING */
+/* LOADING DELAY */
 window.addEventListener("load",()=>{
   setTimeout(()=>{
     document.getElementById("loading-screen").style.display="none";
@@ -180,15 +206,12 @@ window.addEventListener("load",()=>{
 function scatter(){
   const container=document.querySelector(".files-container");
   const files=document.querySelectorAll(".file");
-
   const cw=container.offsetWidth;
   const ch=container.offsetHeight;
 
   files.forEach(file=>{
-    const maxX=cw-file.offsetWidth;
-    const maxY=ch-file.offsetHeight;
-    file.style.left=Math.random()*maxX+"px";
-    file.style.top=Math.random()*maxY+"px";
+    file.style.left=Math.random()*(cw-file.offsetWidth)+"px";
+    file.style.top=Math.random()*(ch-file.offsetHeight)+"px";
   });
 }
 
@@ -203,12 +226,16 @@ document.addEventListener("click",function(e){
   if(e.target.id==="definition-file"){
     toggle("definition-section");
   }
+
+  if(e.target.id==="feelings-file"){
+    toggle("feelings-section");
+  }
 });
 
 function toggle(id){
   const section=document.getElementById(id);
-  section.style.display =
-    section.style.display==="block" ? "none" : "block";
+  section.style.display=
+    section.style.display==="block"?"none":"block";
 }
 
 </script>
