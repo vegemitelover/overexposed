@@ -92,7 +92,7 @@ body{
 }
 
 .file{
-  width:140px;
+  width:150px;
   padding:15px;
   background:#000;
   color:#fff;
@@ -101,6 +101,7 @@ body{
   font-weight:700;
   font-size:.9em;
   box-shadow:3px 3px 0 #000;
+  touch-action:none;
 }
 
 /* SECTIONS */
@@ -139,6 +140,12 @@ footer{
 
 <body>
 
+<!-- BACKGROUND MUSIC -->
+<audio id="bg-music" loop playsinline>
+  <source src="trustme.mp3" type="audio/mpeg">
+</audio>
+
+<!-- LOADING SCREEN -->
 <div id="loading-screen">
   <div class="loading-text">loading</div>
   <div class="dots">
@@ -164,7 +171,7 @@ footer{
 
 <div class="section" id="definition-section">
   <p class="pixel-text">
-  the state of being subjected to an excessive amount of attention, stimulus, or light, such that the capacity for perception, endurance, or appreciation is overwhelmed, distorted, or diminished. literally, in photography or visual media, this occurs when too much light reaches the film or sensor, resulting in washed-out images where highlights lose definition and subtlety is erased. details once sharp and meaningful become flat, overstated, or invisible altogether. metaphorically and psychologically, it describes the phenomenon of being excessively visible or scrutinized, whether socially, emotionally, or culturally, often producing feelings of vulnerability, fatigue, or alienation. in human experience, it can manifest as the relentless pressure of public attention, the emotional exhaustion of sharing too much of oneself, or the corrosive effect of constant sensory or informational bombardment. this state can lead to erasure of nuance, where individual complexity is flattened by the sheer intensity of observation or interaction, producing a paradoxical invisibility within hypervisibility. it carries connotations of risk, fragility, and loss of control, highlighting the tension between the desire to be seen and the dangers inherent in being seen too much. in artistic contexts such as music, photography, or film, it can be explored as a thematic device, representing vulnerability, emotional saturation, and the collision between intimacy and spectacle, often inviting reflection on authenticity, perception, and the limits of endurance under scrutiny.
+  the state of being subjected to an excessive amount of attention, stimulus, or light, such that perception becomes overwhelmed and detail is lost. in visual media, it occurs when too much light reaches a sensor, washing out nuance and flattening depth. metaphorically, it describes the exhaustion of being constantly seen or scrutinized. it represents vulnerability, saturation, and the tension between wanting to be visible and fearing what visibility costs.
   <span class="secret">4/10</span>
   </p>
 </div>
@@ -193,6 +200,20 @@ footer{
 
 <script>
 
+/* BACKGROUND MUSIC (MOBILE SAFE AUTOPLAY) */
+const bgMusic = document.getElementById("bg-music");
+bgMusic.volume = 0.5;
+bgMusic.muted = true;
+
+window.addEventListener("load", () => {
+  bgMusic.play().catch(()=>{});
+});
+
+document.addEventListener("click", () => {
+  bgMusic.muted = false;
+  bgMusic.play().catch(()=>{});
+}, { once:true });
+
 /* LOADING DELAY */
 window.addEventListener("load",()=>{
   setTimeout(()=>{
@@ -215,7 +236,29 @@ function scatter(){
   });
 }
 
-/* TOGGLE */
+/* DRAGGING (MOBILE + DESKTOP) */
+document.querySelectorAll(".file").forEach(file=>{
+  let offsetX, offsetY, isDragging=false;
+
+  file.addEventListener("pointerdown",(e)=>{
+    isDragging=true;
+    offsetX=e.clientX-file.offsetLeft;
+    offsetY=e.clientY-file.offsetTop;
+    file.setPointerCapture(e.pointerId);
+  });
+
+  file.addEventListener("pointermove",(e)=>{
+    if(!isDragging) return;
+    file.style.left=(e.clientX-offsetX)+"px";
+    file.style.top=(e.clientY-offsetY)+"px";
+  });
+
+  file.addEventListener("pointerup",()=>{
+    isDragging=false;
+  });
+});
+
+/* CLICK BEHAVIOR */
 document.addEventListener("click",function(e){
   if(!e.target.classList.contains("file")) return;
 
