@@ -22,8 +22,6 @@ body{
   align-items:center;
   justify-content:center;
 }
-
-/* site hidden until load */
 #site{display:none;}
 
 /* folders */
@@ -54,12 +52,23 @@ body{
   border:1px solid #000;
 }
 
-/* car game */
-#car-canvas{
-  width:100%;
-  max-width:400px;
-  height:250px;
+/* memory game tiles */
+#memory-grid{
+  display:grid;
+  grid-template-columns:repeat(2,100px);
+  grid-gap:10px;
+  justify-content:center;
+  margin-top:10px;
+}
+.tile{
+  width:100px;
+  height:100px;
   background:#ddd;
+  border:2px solid #000;
+  cursor:pointer;
+}
+.tile.active{
+  background:#000;
 }
 
 /* mobile */
@@ -75,7 +84,6 @@ canvas, .file{
 
 <div id="site">
 
-<!-- music -->
 <audio id="bg-music" loop>
   <source src="trustme.mp3" type="audio/mpeg">
 </audio>
@@ -89,14 +97,14 @@ canvas, .file{
 <div class="files-container">
   <div class="file" id="definition-file">definition</div>
   <div class="file" id="feelings-file">my feelings</div>
-  <div class="file" id="car-game-file">8bit car</div>
-  <div class="file" id="strobe-file">memory strobe</div>
+  <div class="file" id="memory-file">memory game</div>
 </div>
 
 <!-- definition -->
 <div class="section" id="definition-section">
 <p>
 the state of being overwhelmed by too much light or attention, where detail disappears and things feel washed out.
+<span style="display:none;">4/10</span>
 </p>
 </div>
 
@@ -107,18 +115,17 @@ i feel like i’m in between versions of myself… not who i was, not who i’m 
 </p>
 </div>
 
-<!-- car game -->
-<div class="game-section" id="car-section">
-<h2>8bit car</h2>
-<canvas id="car-canvas" width="400" height="250"></canvas>
-<p>arrow keys or swipe</p>
-</div>
-
 <!-- memory game -->
-<div class="game-section" id="strobe-section">
-<h2>memory strobe</h2>
-<p>repeat the pattern</p>
-<button id="strobe-btn">start</button>
+<div class="game-section" id="memory-section">
+<h2>memory game</h2>
+<p>repeat the flashing pattern</p>
+<div id="memory-grid">
+  <div class="tile" data-id="0"></div>
+  <div class="tile" data-id="1"></div>
+  <div class="tile" data-id="2"></div>
+  <div class="tile" data-id="3"></div>
+</div>
+<button id="start-memory">start</button>
 </div>
 
 </div>
@@ -129,7 +136,7 @@ window.onload=()=>{
   document.getElementById("loading").style.display="none";
   document.getElementById("site").style.display="block";
   scatter();
-  initCar();
+  initMemory();
 };
 
 /* music (play on click) */
@@ -170,8 +177,7 @@ document.addEventListener("click",e=>{
 
   if(e.target.id==="definition-file") toggle("definition-section");
   if(e.target.id==="feelings-file") toggle("feelings-section");
-  if(e.target.id==="car-game-file") toggle("car-section");
-  if(e.target.id==="strobe-file") toggle("strobe-section");
+  if(e.target.id==="memory-file") toggle("memory-section");
 });
 
 function toggle(id){
@@ -179,88 +185,59 @@ function toggle(id){
   s.style.display = s.style.display==="block" ? "none" : "block";
 }
 
-/* ================= CAR GAME ================= */
-const canvas=document.getElementById("car-canvas");
-const ctx=canvas.getContext("2d");
-let car={x:180,y:180,w:40,h:40,speed:5};
-let obs=[];
-let keys={};
+/* ============== MEMORY GAME (SIMON STYLE) ============== */
+const startBtn=document.getElementById("start-memory");
+const tiles=[...document.querySelectorAll(".tile")];
+let sequence=[];
+let userIndex=0;
+let showing=false;
 
-document.addEventListener("keydown",e=>keys[e.key]=true);
-document.addEventListener("keyup",e=>keys[e.key]=false);
-
-function spawn(){
-  obs.push({x:Math.random()*(canvas.width-40),y:-40,w:40,h:40,speed:2});
-}
-setInterval(spawn,2000);
-
-function update(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="#ddd";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  if(keys["ArrowLeft"]) car.x-=car.speed;
-  if(keys["ArrowRight"]) car.x+=car.speed;
-  car.x=Math.max(0,Math.min(canvas.width-car.w,car.x));
-
-  ctx.fillStyle="#000";
-  ctx.fillRect(car.x,car.y,car.w,car.h);
-
-  obs.forEach((o,i)=>{
-    o.y+=o.speed;
-    ctx.fillRect(o.x,o.y,o.w,o.h);
-
-    if(
-      car.x < o.x+o.w &&
-      car.x+car.w > o.x &&
-      car.y < o.y+o.h &&
-      car.y+car.h > o.y
-    ){
-      obs=[];
-    }
-    if(o.y>canvas.height) obs.splice(i,1);
+function flashTile(id){
+  return new Promise(res=>{
+    const t=tiles[id];
+    t.classList.add("active");
+    setTimeout(()=>{
+      t.classList.remove("active");
+      setTimeout(res,200);
+    },400);
   });
-
-  requestAnimationFrame(update);
-}
-function initCar(){ update(); }
-
-/* ============== MEMORY GAME ============== */
-const btn=document.getElementById("strobe-btn");
-let seq=[],pos=0,showing=false;
-
-function flash(color,time){
-  document.body.style.background=color;
-  return new Promise(res=>setTimeout(res,time));
 }
 
-btn.addEventListener("click",async()=>{
-  seq=[];
-  pos=0;
-  for(let i=0;i<4;i++) seq.push(Math.floor(Math.random()*2));
-
+async function playSequence(){
   showing=true;
-  for(let s of seq){
-    await flash(s===0?"#000":"#fff",300);
-    await flash("#fff",200);
+  for(let id of sequence){
+    await flashTile(id);
   }
   showing=false;
-  document.body.style.background="#fff";
-  btn.textContent="repeat pattern";
-});
+}
 
-btn.addEventListener("click",()=>{
-  if(showing) return;
-  let guess=Math.floor(Math.random()*2);
-  if(guess===seq[pos]){
-    pos++;
-    if(pos>=seq.length){
-      alert("good job");
-      pos=0;
+function newGame(){
+  sequence=[];
+  userIndex=0;
+  for(let i=0;i<4;i++) sequence.push(Math.floor(Math.random()*4));
+  playSequence();
+}
+
+startBtn.addEventListener("click",newGame);
+
+tiles.forEach(tile=>{
+  tile.addEventListener("click",()=>{
+    if(showing) return;
+    const id=parseInt(tile.dataset.id);
+
+    if(id === sequence[userIndex]){
+      userIndex++;
+      if(userIndex >= sequence.length){
+        alert("good job");
+        userIndex=0;
+        newGame();
+      }
+    } else {
+      alert("wrong");
+      userIndex=0;
+      newGame();
     }
-  } else {
-    pos=0;
-  }
+  });
 });
 </script>
 
