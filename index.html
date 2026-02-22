@@ -13,6 +13,19 @@ body{
   background:white;
 }
 
+/* centered image */
+.center-image{
+  display:flex;
+  justify-content:center;
+  margin:40px 0;
+}
+.center-image img{
+  max-width:300px;
+  width:80%;
+  height:auto;
+  pointer-events:none; /* not draggable */
+}
+
 /* folders */
 .files-container{
   position:relative;
@@ -70,6 +83,11 @@ body{
 <div class="hero">
   <h1>overexposed</h1>
   <p>experience it. catch the moments.</p>
+</div>
+
+<!-- centered image -->
+<div class="center-image">
+  <img src="overexposed.jpg" alt="overexposed cover">
 </div>
 
 <!-- folders -->
