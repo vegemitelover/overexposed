@@ -52,13 +52,13 @@ body{
   border:1px solid #000;
 }
 
-/* memory game */
+/* memory game grid (visible on mobile & desktop) */
 #memory-grid{
   display:grid;
   grid-template-columns:repeat(2,100px);
   grid-gap:10px;
   justify-content:center;
-  margin-top:10px;
+  margin:10px auto;
 }
 .tile{
   width:100px;
@@ -140,7 +140,7 @@ i feel like i’m in between versions of myself… not who i was, not who i’m 
 <div class="game-section" id="car-section">
 <h2>8bit car</h2>
 <canvas id="car-canvas" width="400" height="250"></canvas>
-<p>arrow keys or swipe to move</p>
+<p>arrow keys or swipe</p>
 </div>
 
 </div>
@@ -202,7 +202,7 @@ function toggle(id){
   s.style.display = s.style.display==="block" ? "none" : "block";
 }
 
-/* ================= MEMORY GAME (SIMON) ================= */
+/* ============== MEMORY GAME (SIMON STYLE) ============== */
 const startBtn=document.getElementById("start-memory");
 const tiles=[...document.querySelectorAll(".tile")];
 let sequence=[];
