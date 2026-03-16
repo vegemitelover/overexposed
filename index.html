@@ -7,310 +7,336 @@
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
 
 <style>
+
 body{
-  font-family:'Chivo',sans-serif;
-  text-align:center;
-  background:white;
+font-family:'Chivo',sans-serif;
+text-align:center;
+background:white;
 }
 
 /* centered image */
+
 .center-image{
-  display:flex;
-  justify-content:center;
-  margin:40px 0;
+display:flex;
+justify-content:center;
+margin:40px 0;
 }
+
 .center-image img{
-  max-width:300px;
-  width:80%;
-  height:auto;
-  pointer-events:none;
+max-width:300px;
+width:80%;
+height:auto;
+pointer-events:none;
+}
+
+/* discoverable video trigger */
+
+.video-clue{
+font-size:14px;
+opacity:.35;
+cursor:pointer;
+animation:flicker 6s infinite;
+}
+
+@keyframes flicker{
+0%{opacity:.35}
+48%{opacity:.35}
+49%{opacity:.1}
+50%{opacity:.35}
 }
 
 /* folders */
+
 .files-container{
-  position:relative;
-  height:350px;
+position:relative;
+height:350px;
 }
+
 .file{
-  position:absolute;
-  width:120px;
-  padding:10px;
-  background:#f2f2f2;
-  border:2px solid #000;
-  cursor:grab;
-  border-radius:4px;
+position:absolute;
+width:120px;
+padding:10px;
+background:#f2f2f2;
+border:2px solid #000;
+cursor:grab;
+border-radius:4px;
 }
+
 .file::before{
-  content:"📁";
-  display:block;
+content:"📁";
+display:block;
 }
 
 /* sections */
+
 .section{
-  display:none;
-  margin:20px auto;
-  max-width:600px;
-  padding:15px;
-  border:1px solid #000;
+display:none;
+margin:20px auto;
+max-width:600px;
+padding:15px;
+border:1px solid #000;
 }
 
 /* memory grid */
+
 #memory-grid{
-  display:grid;
-  grid-template-columns:repeat(2,100px);
-  grid-gap:10px;
-  justify-content:center;
-  margin:10px auto;
+display:grid;
+grid-template-columns:repeat(2,100px);
+grid-gap:10px;
+justify-content:center;
+margin:10px auto;
 }
+
 .tile{
-  width:100px;
-  height:100px;
-  background:#ddd;
-  border:2px solid #000;
+width:100px;
+height:100px;
+background:#ddd;
+border:2px solid #000;
 }
+
 .tile.active{
-  background:#000;
+background:#000;
 }
 
-/* cryptic text */
-.hidden-text{
-  opacity:0.05;
-  font-size:12px;
-  margin-top:30px;
+/* hidden highlight text */
+
+::selection{
+background:black;
+color:white;
 }
 
-.glitch{
-  opacity:0;
-  transition:opacity 0.3s;
-  font-size:13px;
+.hidden-highlight{
+color:white;
+user-select:text;
 }
 
-/* secret trigger */
-.secret-trigger{
-  margin-top:40px;
-  font-size:14px;
-  opacity:0.2;
-  cursor:pointer;
-}
+/* video */
 
-/* video container */
 #video-section{
-  display:none;
-  margin-top:30px;
+display:none;
+margin-top:40px;
 }
 
 video{
-  max-width:600px;
-  width:90%;
-  border:2px solid black;
+width:90%;
+max-width:600px;
+border:2px solid black;
 }
 
 #replay{
-  margin-top:10px;
-  font-size:14px;
-  cursor:pointer;
-  opacity:0.6;
-  display:none;
+cursor:pointer;
+opacity:.6;
+margin-top:8px;
+display:none;
 }
+
 </style>
 </head>
 
 <body>
 
-<div class="hero">
-  <h1>overexposed</h1>
-  <p>experience it. catch the moments.</p>
-</div>
+<h1>overexposed</h1>
+<p>experience it. catch the moments.</p>
 
 <div class="center-image">
-  <img src="overexposed.jpg" alt="overexposed cover">
+<img src="overexposed.jpg">
 </div>
 
+<p class="video-clue" id="videoTrigger">
+something is hidden in the light
+</p>
+
 <div class="files-container">
-  <div class="file" id="definition-file">definition</div>
-  <div class="file" id="feelings-file">my feelings</div>
-  <div class="file" id="memory-file">memory game</div>
+<div class="file" id="definition-file">definition</div>
+<div class="file" id="feelings-file">my feelings</div>
+<div class="file" id="memory-file">memory game</div>
 </div>
 
 <div class="section" id="definition-section">
 <p>
-the state of being overwhelmed by too much light or attention, where detail disappears and things feel washed out.
+the state of being overwhelmed by too much light or attention,
+where detail disappears and things feel washed out.
 </p>
 <p><strong>4/10</strong></p>
-<p class="glitch" id="glitch1">too bright to see clearly.</p>
 </div>
 
 <div class="section" id="feelings-section">
 <p>
-i feel like i’m in between versions of myself… not who i was, not who i’m becoming yet.
+i feel like i'm in between versions of myself… not who i was,
+not who i'm becoming yet.
 </p>
-<p class="glitch" id="glitch2">some moments shouldn't be remembered.</p>
 </div>
 
 <div class="section" id="memory-section">
+
 <h2>memory game</h2>
 <p>repeat the flashing pattern</p>
 
 <div id="memory-grid">
-  <div class="tile" data-id="0"></div>
-  <div class="tile" data-id="1"></div>
-  <div class="tile" data-id="2"></div>
-  <div class="tile" data-id="3"></div>
+<div class="tile" data-id="0"></div>
+<div class="tile" data-id="1"></div>
+<div class="tile" data-id="2"></div>
+<div class="tile" data-id="3"></div>
 </div>
 
 <button id="start-memory">start</button>
 <p id="secret"></p>
+
 </div>
 
-<!-- SECRET VIDEO TRIGGER -->
-<div class="secret-trigger" id="trigger">////</div>
-
-<!-- VIDEO PLAYER -->
 <div id="video-section">
+
 <video id="teaser" controls>
-<source src="overexposedteaser.mov" type="video/mp4">
+<source src="overexposedteaser.mov">
 </video>
+
 <div id="replay">again?</div>
+
 </div>
 
-<p class="hidden-text">the light stayed on longer than it should have.</p>
+<p class="hidden-highlight">
+you stayed too long.
+</p>
 
 <script>
 
 /* scatter folders */
+
 function scatter(){
-  const cont=document.querySelector(".files-container");
-  const files=document.querySelectorAll(".file");
-  files.forEach(f=>{
-    f.style.left=Math.random()*(cont.offsetWidth-120)+"px";
-    f.style.top=Math.random()*(cont.offsetHeight-80)+"px";
-  });
+const cont=document.querySelector(".files-container")
+const files=document.querySelectorAll(".file")
+
+files.forEach(f=>{
+f.style.left=Math.random()*(cont.offsetWidth-120)+"px"
+f.style.top=Math.random()*(cont.offsetHeight-80)+"px"
+})
 }
-window.onload=scatter;
+
+window.onload=scatter
 
 /* drag folders */
+
 document.querySelectorAll(".file").forEach(file=>{
-  let x,y,drag=false;
 
-  file.addEventListener("pointerdown",e=>{
-    drag=true;
-    x=e.clientX-file.offsetLeft;
-    y=e.clientY-file.offsetTop;
-  });
+let x,y,drag=false
 
-  file.addEventListener("pointermove",e=>{
-    if(!drag) return;
-    file.style.left=(e.clientX-x)+"px";
-    file.style.top=(e.clientY-y)+"px";
-  });
+file.addEventListener("pointerdown",e=>{
+drag=true
+x=e.clientX-file.offsetLeft
+y=e.clientY-file.offsetTop
+})
 
-  file.addEventListener("pointerup",()=>drag=false);
-});
+file.addEventListener("pointermove",e=>{
+if(!drag)return
+file.style.left=(e.clientX-x)+"px"
+file.style.top=(e.clientY-y)+"px"
+})
 
-/* reveal sections */
+file.addEventListener("pointerup",()=>drag=false)
+
+})
+
+/* toggle sections */
+
 document.addEventListener("click",e=>{
-  if(!e.target.classList.contains("file")) return;
 
-  if(e.target.id==="definition-file") toggle("definition-section","glitch1");
-  if(e.target.id==="feelings-file") toggle("feelings-section","glitch2");
-  if(e.target.id==="memory-file") toggle("memory-section");
-});
+if(!e.target.classList.contains("file"))return
 
-function toggle(id,glitch){
-  const s=document.getElementById(id);
-  s.style.display = s.style.display==="block" ? "none" : "block";
+if(e.target.id==="definition-file")toggle("definition-section")
+if(e.target.id==="feelings-file")toggle("feelings-section")
+if(e.target.id==="memory-file")toggle("memory-section")
 
-  if(glitch){
-    const g=document.getElementById(glitch);
-    setTimeout(()=>g.style.opacity=1,2000);
-  }
+})
+
+function toggle(id){
+
+const s=document.getElementById(id)
+
+s.style.display=s.style.display==="block"?"none":"block"
+
 }
 
-/* memory game */
-const startBtn=document.getElementById("start-memory");
-const tiles=[...document.querySelectorAll(".tile")];
-const secret=document.getElementById("secret");
+/* video reveal */
 
-let sequence=[];
-let userIndex=0;
-let showing=false;
+const videoTrigger=document.getElementById("videoTrigger")
+const videoSection=document.getElementById("video-section")
+const video=document.getElementById("teaser")
+const replay=document.getElementById("replay")
 
-function flashTile(id){
-  return new Promise(res=>{
-    const t=tiles[id];
-    t.classList.add("active");
-    setTimeout(()=>{
-      t.classList.remove("active");
-      setTimeout(res,200);
-    },400);
-  });
-}
+videoTrigger.addEventListener("click",()=>{
 
-async function playSequence(){
-  showing=true;
-  for(let id of sequence){
-    await flashTile(id);
-  }
-  showing=false;
-}
+videoSection.style.display="block"
 
-function newGame(){
-  sequence=[];
-  userIndex=0;
+window.scrollTo({
+top:document.body.scrollHeight,
+behavior:"smooth"
+})
 
-  for(let i=0;i<4;i++){
-    sequence.push(Math.floor(Math.random()*4));
-  }
+video.play()
 
-  playSequence();
-}
-
-startBtn.addEventListener("click",newGame);
-
-tiles.forEach(tile=>{
-  tile.addEventListener("click",()=>{
-
-    if(showing) return;
-
-    const id=parseInt(tile.dataset.id);
-
-    if(id===sequence[userIndex]){
-      userIndex++;
-
-      if(userIndex>=sequence.length){
-        secret.textContent="you remembered something you weren't supposed to.";
-        newGame();
-      }
-
-    }else{
-      secret.textContent="memory corrupted.";
-      newGame();
-    }
-
-  });
-});
-
-/* secret video */
-const trigger=document.getElementById("trigger");
-const videoSection=document.getElementById("video-section");
-const video=document.getElementById("teaser");
-const replay=document.getElementById("replay");
-
-trigger.addEventListener("click",()=>{
-  videoSection.style.display="block";
-  video.play();
-  window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
-});
+})
 
 video.addEventListener("ended",()=>{
-  replay.style.display="block";
-});
+
+replay.style.display="block"
+
+})
 
 replay.addEventListener("click",()=>{
-  replay.style.display="none";
-  video.currentTime=0;
-  video.play();
-});
+
+replay.style.display="none"
+video.currentTime=0
+video.play()
+
+})
+
+/* replay phrase randomizer */
+
+const replayPhrases=[
+"again?",
+"once more?",
+"watch it again.",
+"did you miss something?"
+]
+
+setInterval(()=>{
+replay.innerText=replayPhrases[Math.floor(Math.random()*replayPhrases.length)]
+},6000)
+
+/* idle easter egg */
+
+setTimeout(()=>{
+console.log("the light is still on.")
+},10000)
+
+/* random glitch message */
+
+setTimeout(()=>{
+
+const m=document.createElement("p")
+m.innerText="something feels wrong."
+m.style.opacity=".4"
+document.body.appendChild(m)
+
+},Math.random()*20000+20000)
+
+/* konami code easter egg */
+
+let keys=[]
+
+document.addEventListener("keydown",e=>{
+
+keys.push(e.key)
+
+if(keys.join("").includes("ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba")){
+
+alert("you found something you weren't meant to.")
+
+keys=[]
+
+}
+
+})
 
 </script>
 
