@@ -12,9 +12,16 @@ body{
 font-family:'Chivo',sans-serif;
 text-align:center;
 background:white;
+transition:background 6s;
 }
 
-/* centered image */
+/* title */
+
+h1{
+font-size:40px;
+}
+
+/* image */
 
 .center-image{
 display:flex;
@@ -25,24 +32,22 @@ margin:40px 0;
 .center-image img{
 max-width:300px;
 width:80%;
-height:auto;
-pointer-events:none;
+cursor:pointer;
 }
 
-/* discoverable video trigger */
+/* discoverable video clue */
 
 .video-clue{
-font-size:14px;
-opacity:.35;
+opacity:.4;
 cursor:pointer;
 animation:flicker 6s infinite;
 }
 
 @keyframes flicker{
-0%{opacity:.35}
-48%{opacity:.35}
-49%{opacity:.1}
-50%{opacity:.35}
+0%{opacity:.4}
+49%{opacity:.4}
+50%{opacity:.15}
+51%{opacity:.4}
 }
 
 /* folders */
@@ -57,9 +62,9 @@ position:absolute;
 width:120px;
 padding:10px;
 background:#f2f2f2;
-border:2px solid #000;
-cursor:grab;
+border:2px solid black;
 border-radius:4px;
+cursor:grab;
 }
 
 .file::before{
@@ -74,10 +79,10 @@ display:none;
 margin:20px auto;
 max-width:600px;
 padding:15px;
-border:1px solid #000;
+border:1px solid black;
 }
 
-/* memory grid */
+/* memory game */
 
 #memory-grid{
 display:grid;
@@ -91,23 +96,11 @@ margin:10px auto;
 width:100px;
 height:100px;
 background:#ddd;
-border:2px solid #000;
+border:2px solid black;
 }
 
 .tile.active{
-background:#000;
-}
-
-/* hidden highlight text */
-
-::selection{
 background:black;
-color:white;
-}
-
-.hidden-highlight{
-color:white;
-user-select:text;
 }
 
 /* video */
@@ -126,8 +119,25 @@ border:2px solid black;
 #replay{
 cursor:pointer;
 opacity:.6;
-margin-top:8px;
 display:none;
+margin-top:10px;
+}
+
+/* highlight secret */
+
+.hidden-highlight{
+color:white;
+}
+
+/* glitch message */
+
+.glitch{
+position:fixed;
+bottom:10px;
+left:50%;
+transform:translateX(-50%);
+opacity:.4;
+font-size:12px;
 }
 
 </style>
@@ -135,11 +145,11 @@ display:none;
 
 <body>
 
-<h1>overexposed</h1>
-<p>experience it. catch the moments.</p>
+<h1 id="title">overexposed</h1>
+<p id="subtitle">experience it. catch the moments.</p>
 
 <div class="center-image">
-<img src="overexposed.jpg">
+<img id="cover" src="overexposed.jpg">
 </div>
 
 <p class="video-clue" id="videoTrigger">
@@ -147,39 +157,51 @@ something is hidden in the light
 </p>
 
 <div class="files-container">
+
 <div class="file" id="definition-file">definition</div>
 <div class="file" id="feelings-file">my feelings</div>
 <div class="file" id="memory-file">memory game</div>
+
 </div>
 
 <div class="section" id="definition-section">
+
 <p>
 the state of being overwhelmed by too much light or attention,
 where detail disappears and things feel washed out.
 </p>
+
 <p><strong>4/10</strong></p>
+
 </div>
 
 <div class="section" id="feelings-section">
+
 <p>
-i feel like i'm in between versions of myself… not who i was,
+i feel like i'm between versions of myself…
+not who i was,
 not who i'm becoming yet.
 </p>
+
 </div>
 
 <div class="section" id="memory-section">
 
 <h2>memory game</h2>
+
 <p>repeat the flashing pattern</p>
 
 <div id="memory-grid">
+
 <div class="tile" data-id="0"></div>
 <div class="tile" data-id="1"></div>
 <div class="tile" data-id="2"></div>
 <div class="tile" data-id="3"></div>
+
 </div>
 
 <button id="start-memory">start</button>
+
 <p id="secret"></p>
 
 </div>
@@ -195,7 +217,7 @@ not who i'm becoming yet.
 </div>
 
 <p class="hidden-highlight">
-you stayed too long.
+the light never turned off.
 </p>
 
 <script>
@@ -203,13 +225,17 @@ you stayed too long.
 /* scatter folders */
 
 function scatter(){
+
 const cont=document.querySelector(".files-container")
 const files=document.querySelectorAll(".file")
 
 files.forEach(f=>{
+
 f.style.left=Math.random()*(cont.offsetWidth-120)+"px"
 f.style.top=Math.random()*(cont.offsetHeight-80)+"px"
+
 })
+
 }
 
 window.onload=scatter
@@ -236,7 +262,7 @@ file.addEventListener("pointerup",()=>drag=false)
 
 })
 
-/* toggle sections */
+/* section toggle */
 
 document.addEventListener("click",e=>{
 
@@ -263,7 +289,7 @@ const videoSection=document.getElementById("video-section")
 const video=document.getElementById("teaser")
 const replay=document.getElementById("replay")
 
-videoTrigger.addEventListener("click",()=>{
+videoTrigger.onclick=()=>{
 
 videoSection.style.display="block"
 
@@ -274,69 +300,178 @@ behavior:"smooth"
 
 video.play()
 
-})
+}
 
-video.addEventListener("ended",()=>{
+video.onended=()=>{
 
 replay.style.display="block"
 
-})
+}
 
-replay.addEventListener("click",()=>{
+replay.onclick=()=>{
 
 replay.style.display="none"
 video.currentTime=0
 video.play()
 
-})
+}
 
-/* replay phrase randomizer */
+/* replay phrases */
 
-const replayPhrases=[
+const phrases=[
 "again?",
-"once more?",
-"watch it again.",
-"did you miss something?"
+"watch again",
+"did you miss something",
+"too bright",
+"don't replay it"
 ]
 
 setInterval(()=>{
-replay.innerText=replayPhrases[Math.floor(Math.random()*replayPhrases.length)]
-},6000)
 
-/* idle easter egg */
+replay.innerText=phrases[Math.floor(Math.random()*phrases.length)]
+
+},5000)
+
+/* memory game */
+
+const tiles=[...document.querySelectorAll(".tile")]
+let sequence=[]
+let userIndex=0
+
+function flash(id){
+
+return new Promise(res=>{
+
+const t=tiles[id]
+
+t.classList.add("active")
 
 setTimeout(()=>{
-console.log("the light is still on.")
-},10000)
+t.classList.remove("active")
+res()
+},400)
 
-/* random glitch message */
+})
 
-setTimeout(()=>{
+}
 
-const m=document.createElement("p")
-m.innerText="something feels wrong."
-m.style.opacity=".4"
-document.body.appendChild(m)
+async function play(){
 
-},Math.random()*20000+20000)
+for(let id of sequence){
+await flash(id)
+}
 
-/* konami code easter egg */
+}
 
-let keys=[]
+document.getElementById("start-memory").onclick=()=>{
 
-document.addEventListener("keydown",e=>{
+sequence=[]
+userIndex=0
 
-keys.push(e.key)
+for(let i=0;i<4;i++){
+sequence.push(Math.floor(Math.random()*4))
+}
 
-if(keys.join("").includes("ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba")){
+play()
 
-alert("you found something you weren't meant to.")
+}
 
-keys=[]
+tiles.forEach(tile=>{
+
+tile.onclick=()=>{
+
+const id=parseInt(tile.dataset.id)
+
+if(id===sequence[userIndex]){
+
+userIndex++
+
+if(userIndex===sequence.length){
+
+document.getElementById("secret").innerText=
+"you remembered something you weren't supposed to."
+
+}
+
+}else{
+
+document.getElementById("secret").innerText="memory corrupted."
+
+}
 
 }
 
 })
+
+/* slow overexposure */
+
+setTimeout(()=>{
+
+document.body.style.background="#f7f7f7"
+
+},60000)
+
+/* console secret */
+
+console.log("if you're reading this, you looked deeper than most people")
+
+/* random glitch */
+
+setInterval(()=>{
+
+const m=document.createElement("div")
+
+m.className="glitch"
+
+const texts=[
+"wait",
+"don't",
+"look away",
+"too bright"
+]
+
+m.innerText=texts[Math.floor(Math.random()*texts.length)]
+
+document.body.appendChild(m)
+
+setTimeout(()=>m.remove(),1200)
+
+},30000)
+
+/* visit secret */
+
+if(localStorage.getItem("visited")){
+
+alert("you came back.")
+
+}
+
+localStorage.setItem("visited",true)
+
+/* hidden track */
+
+function reveal(){
+
+const audio=new Audio("trustme.mp3")
+
+audio.play()
+
+console.log("there was never enough light.")
+
+}
+
+window.reveal=reveal
+
+/* midnight secret */
+
+const hour=new Date().getHours()
+
+if(hour>=0 && hour<=5){
+
+document.getElementById("subtitle").innerText=
+"the light shouldn't be on this late."
+
+}
 
 </script>
 
