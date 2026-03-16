@@ -23,7 +23,7 @@ body{
   max-width:300px;
   width:80%;
   height:auto;
-  pointer-events:none; /* not draggable */
+  pointer-events:none;
 }
 
 /* folders */
@@ -45,7 +45,7 @@ body{
   display:block;
 }
 
-/* sections (hidden by default) */
+/* sections */
 .section{
   display:none;
   margin:20px auto;
@@ -54,7 +54,7 @@ body{
   border:1px solid #000;
 }
 
-/* memory game (hidden until folder click) */
+/* memory grid */
 #memory-grid{
   display:grid;
   grid-template-columns:repeat(2,100px);
@@ -71,66 +71,72 @@ body{
 .tile.active{
   background:#000;
 }
+
+/* cryptic text */
+.hidden-text{
+  opacity:0.05;
+  font-size:12px;
+  margin-top:30px;
+}
+
+.glitch{
+  opacity:0;
+  transition:opacity 0.3s;
+  font-size:13px;
+}
 </style>
 </head>
 
 <body>
-
-<audio id="bg-music" loop>
-  <source src="letmebreathe.mp3" type="audio/mpeg">
-</audio>
 
 <div class="hero">
   <h1>overexposed</h1>
   <p>experience it. catch the moments.</p>
 </div>
 
-<!-- centered image -->
 <div class="center-image">
   <img src="overexposed.jpg" alt="overexposed cover">
 </div>
 
-<!-- folders -->
 <div class="files-container">
   <div class="file" id="definition-file">definition</div>
   <div class="file" id="feelings-file">my feelings</div>
   <div class="file" id="memory-file">memory game</div>
 </div>
 
-<!-- definition (hidden until click) -->
 <div class="section" id="definition-section">
 <p>
 the state of being overwhelmed by too much light or attention, where detail disappears and things feel washed out.
 </p>
 <p><strong>4/10</strong></p>
+<p class="glitch" id="glitch1">too bright to see clearly.</p>
 </div>
 
-<!-- feelings (hidden until click) -->
 <div class="section" id="feelings-section">
 <p>
 i feel like i’m in between versions of myself… not who i was, not who i’m becoming yet.
 </p>
+<p class="glitch" id="glitch2">some moments shouldn't be remembered.</p>
 </div>
 
-<!-- memory game (hidden until click) -->
 <div class="section" id="memory-section">
 <h2>memory game</h2>
 <p>repeat the flashing pattern</p>
+
 <div id="memory-grid">
   <div class="tile" data-id="0"></div>
   <div class="tile" data-id="1"></div>
   <div class="tile" data-id="2"></div>
   <div class="tile" data-id="3"></div>
 </div>
+
 <button id="start-memory">start</button>
+<p id="secret"></p>
 </div>
 
+<p class="hidden-text">the light stayed on longer than it should have.</p>
+
 <script>
-/* music (play on click) */
-const music=document.getElementById("bg-music");
-document.body.addEventListener("click",()=>{
-  music.play().catch(()=>{});
-},{once:true});
 
 /* scatter folders */
 function scatter(){
@@ -146,36 +152,46 @@ window.onload=scatter;
 /* drag folders */
 document.querySelectorAll(".file").forEach(file=>{
   let x,y,drag=false;
+
   file.addEventListener("pointerdown",e=>{
     drag=true;
     x=e.clientX-file.offsetLeft;
     y=e.clientY-file.offsetTop;
   });
+
   file.addEventListener("pointermove",e=>{
     if(!drag) return;
     file.style.left=(e.clientX-x)+"px";
     file.style.top=(e.clientY-y)+"px";
   });
+
   file.addEventListener("pointerup",()=>drag=false);
 });
 
-/* click folders -> reveal sections */
+/* reveal sections */
 document.addEventListener("click",e=>{
   if(!e.target.classList.contains("file")) return;
 
-  if(e.target.id==="definition-file") toggle("definition-section");
-  if(e.target.id==="feelings-file") toggle("feelings-section");
+  if(e.target.id==="definition-file") toggle("definition-section","glitch1");
+  if(e.target.id==="feelings-file") toggle("feelings-section","glitch2");
   if(e.target.id==="memory-file") toggle("memory-section");
 });
 
-function toggle(id){
+function toggle(id,glitch){
   const s=document.getElementById(id);
   s.style.display = s.style.display==="block" ? "none" : "block";
+
+  if(glitch){
+    const g=document.getElementById(glitch);
+    setTimeout(()=>g.style.opacity=1,2000);
+  }
 }
 
-/* memory game (Simon style) */
+/* memory game */
 const startBtn=document.getElementById("start-memory");
 const tiles=[...document.querySelectorAll(".tile")];
+const secret=document.getElementById("secret");
+
 let sequence=[];
 let userIndex=0;
 let showing=false;
@@ -202,7 +218,11 @@ async function playSequence(){
 function newGame(){
   sequence=[];
   userIndex=0;
-  for(let i=0;i<4;i++) sequence.push(Math.floor(Math.random()*4));
+
+  for(let i=0;i<4;i++){
+    sequence.push(Math.floor(Math.random()*4));
+  }
+
   playSequence();
 }
 
@@ -210,21 +230,27 @@ startBtn.addEventListener("click",newGame);
 
 tiles.forEach(tile=>{
   tile.addEventListener("click",()=>{
+
     if(showing) return;
+
     const id=parseInt(tile.dataset.id);
 
-    if(id === sequence[userIndex]){
+    if(id===sequence[userIndex]){
       userIndex++;
-      if(userIndex >= sequence.length){
-        alert("good job");
+
+      if(userIndex>=sequence.length){
+        secret.textContent="you remembered something you weren't supposed to.";
         newGame();
       }
-    } else {
-      alert("wrong");
+
+    }else{
+      secret.textContent="memory corrupted.";
       newGame();
     }
+
   });
 });
+
 </script>
 
 </body>
