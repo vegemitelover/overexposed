@@ -84,6 +84,34 @@ body{
   transition:opacity 0.3s;
   font-size:13px;
 }
+
+/* secret trigger */
+.secret-trigger{
+  margin-top:40px;
+  font-size:14px;
+  opacity:0.2;
+  cursor:pointer;
+}
+
+/* video container */
+#video-section{
+  display:none;
+  margin-top:30px;
+}
+
+video{
+  max-width:600px;
+  width:90%;
+  border:2px solid black;
+}
+
+#replay{
+  margin-top:10px;
+  font-size:14px;
+  cursor:pointer;
+  opacity:0.6;
+  display:none;
+}
 </style>
 </head>
 
@@ -132,6 +160,17 @@ i feel like i’m in between versions of myself… not who i was, not who i’m 
 
 <button id="start-memory">start</button>
 <p id="secret"></p>
+</div>
+
+<!-- SECRET VIDEO TRIGGER -->
+<div class="secret-trigger" id="trigger">////</div>
+
+<!-- VIDEO PLAYER -->
+<div id="video-section">
+<video id="teaser" controls>
+<source src="overexposedteaser.mov" type="video/mp4">
+</video>
+<div id="replay">again?</div>
 </div>
 
 <p class="hidden-text">the light stayed on longer than it should have.</p>
@@ -249,6 +288,28 @@ tiles.forEach(tile=>{
     }
 
   });
+});
+
+/* secret video */
+const trigger=document.getElementById("trigger");
+const videoSection=document.getElementById("video-section");
+const video=document.getElementById("teaser");
+const replay=document.getElementById("replay");
+
+trigger.addEventListener("click",()=>{
+  videoSection.style.display="block";
+  video.play();
+  window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+});
+
+video.addEventListener("ended",()=>{
+  replay.style.display="block";
+});
+
+replay.addEventListener("click",()=>{
+  replay.style.display="none";
+  video.currentTime=0;
+  video.play();
 });
 
 </script>
