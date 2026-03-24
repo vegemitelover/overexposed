@@ -120,6 +120,16 @@ opacity:.7;
 font-size:14px;
 }
 
+/* hidden memory sentence */
+
+#hiddenMemory{
+margin-top:120px;
+font-size:14px;
+opacity:0.05;
+letter-spacing:3px;
+user-select:text;
+}
+
 </style>
 </head>
 
@@ -209,9 +219,7 @@ not who i'm becoming yet.
 <div id="video-section">
 
 <video id="teaser" controls>
-
 <source src="overexposedteaser.mov">
-
 </video>
 
 <div id="replay">again?</div>
@@ -220,15 +228,19 @@ not who i'm becoming yet.
 
 </div>
 
+<!-- HIDDEN MEMORY SENTENCE -->
+
+<p id="hiddenMemory"></p>
+
 <script>
 
-/* state */
+/* STATE */
 
 let corruption=0
 let memoryWins=0
 let videoViews=0
 
-/* scatter folders */
+/* SCATTER FOLDERS */
 
 function scatter(){
 
@@ -246,7 +258,7 @@ f.style.top=Math.random()*(cont.offsetHeight-80)+"px"
 
 window.onload=scatter
 
-/* drag folders */
+/* DRAG FOLDERS */
 
 document.querySelectorAll(".file").forEach(file=>{
 
@@ -268,7 +280,7 @@ file.addEventListener("pointerup",()=>drag=false)
 
 })
 
-/* toggle sections */
+/* TOGGLE SECTIONS */
 
 document.addEventListener("click",e=>{
 
@@ -288,25 +300,23 @@ increaseCorruption()
 
 }
 
-/* corruption */
+/* CORRUPTION SYSTEM */
 
 function increaseCorruption(){
 
 corruption++
 
 updateFragments()
-
 updateDefinition()
+updateHiddenMemory()
 
 if(corruption==6){
-
 spawnArchive()
-
 }
 
 }
 
-/* story fragments */
+/* STORY FRAGMENTS */
 
 const fragments=[
 
@@ -338,7 +348,7 @@ document.getElementById("fragments").appendChild(p)
 
 }
 
-/* definition mutation */
+/* DEFINITION CHANGE */
 
 function updateDefinition(){
 
@@ -352,7 +362,7 @@ d.innerText="when something is exposed too long, the image disappears."
 
 }
 
-/* archive folder */
+/* ARCHIVE */
 
 function spawnArchive(){
 
@@ -376,20 +386,41 @@ alert("i wish i stopped looking at it.")
 
 }
 
-/* video */
+/* HIDDEN MEMORY SENTENCE */
+
+const memoryReveal=[
+
+"",
+"i",
+"i wish",
+"i wish i never",
+"i wish i never took",
+"i wish i never took that picture"
+
+]
+
+function updateHiddenMemory(){
+
+const el=document.getElementById("hiddenMemory")
+
+if(corruption>=3) el.innerText=memoryReveal[1]
+if(corruption>=5) el.innerText=memoryReveal[2]
+if(corruption>=7) el.innerText=memoryReveal[3]
+if(corruption>=9) el.innerText=memoryReveal[4]
+if(corruption>=12) el.innerText=memoryReveal[5]
+
+}
+
+/* VIDEO */
 
 const videoTrigger=document.getElementById("videoTrigger")
-
 const video=document.getElementById("teaser")
-
 const videoSection=document.getElementById("video-section")
-
 const replay=document.getElementById("replay")
 
 videoTrigger.onclick=()=>{
 
 videoSection.style.display="block"
-
 video.play()
 
 }
@@ -403,21 +434,15 @@ replay.style.display="block"
 const msg=document.getElementById("videoMessage")
 
 if(videoViews==1){
-
 msg.innerText="you can watch it again."
-
 }
 
 if(videoViews==3){
-
 msg.innerText="it doesn't look the same anymore."
-
 }
 
 if(videoViews==5){
-
-msg.innerText="you changed it."
-
+msg.innerText="maybe the picture looked better before."
 }
 
 }
@@ -425,14 +450,12 @@ msg.innerText="you changed it."
 replay.onclick=()=>{
 
 replay.style.display="none"
-
 video.currentTime=0
-
 video.play()
 
 }
 
-/* memory game */
+/* MEMORY GAME */
 
 const tiles=[...document.querySelectorAll(".tile")]
 
@@ -450,7 +473,6 @@ t.classList.add("active")
 setTimeout(()=>{
 
 t.classList.remove("active")
-
 res()
 
 },400)
@@ -462,9 +484,7 @@ res()
 async function play(){
 
 for(let id of sequence){
-
 await flash(id)
-
 }
 
 }
@@ -472,13 +492,10 @@ await flash(id)
 document.getElementById("start-memory").onclick=()=>{
 
 sequence=[]
-
 userIndex=0
 
 for(let i=0;i<4;i++){
-
 sequence.push(Math.floor(Math.random()*4))
-
 }
 
 play()
@@ -502,21 +519,15 @@ memoryWins++
 const m=document.getElementById("memoryMessage")
 
 if(memoryWins==1){
-
 m.innerText="good memory."
-
 }
 
 if(memoryWins==2){
-
 m.innerText="you remembered too much."
-
 }
 
 if(memoryWins>=3){
-
 m.innerText="stop trying to remember."
-
 }
 
 }
@@ -531,7 +542,7 @@ document.getElementById("memoryMessage").innerText="memory corrupted."
 
 })
 
-/* slow overexposure */
+/* OVEREXPOSURE EFFECT */
 
 setInterval(()=>{
 
@@ -539,7 +550,7 @@ document.body.style.background="rgb("+(255-corruption*3)+","+(255-corruption*3)+
 
 },5000)
 
-/* console */
+/* CONSOLE SECRET */
 
 console.log("if you're reading this, you looked deeper than most people")
 
@@ -553,12 +564,10 @@ console.log("there was never enough light.")
 
 window.reveal=reveal
 
-/* returning visitor */
+/* RETURNING VISITOR */
 
 if(localStorage.getItem("visited")){
-
 console.log("you came back.")
-
 }
 
 localStorage.setItem("visited",true)
