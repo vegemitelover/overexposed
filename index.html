@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>overexposed</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@700;900&display=swap" rel="stylesheet">
 
 <style>
@@ -12,16 +15,13 @@ body{
 font-family:'Chivo',sans-serif;
 text-align:center;
 background:white;
-transition:background 6s;
+transition:background 5s;
 }
-
-/* title */
 
 h1{
 font-size:40px;
+margin-top:20px;
 }
-
-/* image */
 
 .center-image{
 display:flex;
@@ -30,32 +30,16 @@ margin:40px 0;
 }
 
 .center-image img{
-max-width:300px;
-width:80%;
-cursor:pointer;
+max-width:320px;
+width:85%;
 }
-
-/* discoverable video clue */
-
-.video-clue{
-opacity:.4;
-cursor:pointer;
-animation:flicker 6s infinite;
-}
-
-@keyframes flicker{
-0%{opacity:.4}
-49%{opacity:.4}
-50%{opacity:.15}
-51%{opacity:.4}
-}
-
-/* folders */
 
 .files-container{
 position:relative;
-height:350px;
+height:360px;
 }
+
+/* folders */
 
 .file{
 position:absolute;
@@ -82,7 +66,7 @@ padding:15px;
 border:1px solid black;
 }
 
-/* memory game */
+/* memory grid */
 
 #memory-grid{
 display:grid;
@@ -103,7 +87,7 @@ border:2px solid black;
 background:black;
 }
 
-/* video */
+/* teaser */
 
 #video-section{
 display:none;
@@ -117,27 +101,23 @@ border:2px solid black;
 }
 
 #replay{
+margin-top:10px;
 cursor:pointer;
 opacity:.6;
 display:none;
-margin-top:10px;
 }
 
-/* highlight secret */
-
-.hidden-highlight{
-color:white;
-}
-
-/* glitch message */
-
-.glitch{
-position:fixed;
-bottom:10px;
-left:50%;
-transform:translateX(-50%);
+.video-clue{
 opacity:.4;
-font-size:12px;
+cursor:pointer;
+}
+
+/* glitch text */
+
+.fragment{
+margin-top:10px;
+opacity:.7;
+font-size:14px;
 }
 
 </style>
@@ -146,10 +126,13 @@ font-size:12px;
 <body>
 
 <h1 id="title">overexposed</h1>
-<p id="subtitle">experience it. catch the moments.</p>
+
+<p id="subtitle">
+experience it. catch the moments.
+</p>
 
 <div class="center-image">
-<img id="cover" src="overexposed.jpg">
+<img src="overexposed.jpg" id="cover">
 </div>
 
 <p class="video-clue" id="videoTrigger">
@@ -158,22 +141,33 @@ something is hidden in the light
 
 <div class="files-container">
 
-<div class="file" id="definition-file">definition</div>
-<div class="file" id="feelings-file">my feelings</div>
-<div class="file" id="memory-file">memory game</div>
+<div class="file" id="definition-file">
+definition
+</div>
+
+<div class="file" id="feelings-file">
+my feelings
+</div>
+
+<div class="file" id="memory-file">
+memory game
+</div>
 
 </div>
 
+<!-- DEFINITION -->
+
 <div class="section" id="definition-section">
 
-<p>
-the state of being overwhelmed by too much light or attention,
-where detail disappears and things feel washed out.
+<p id="definitionText">
+the state of being overwhelmed by too much light or attention.
 </p>
 
 <p><strong>4/10</strong></p>
 
 </div>
+
+<!-- FEELINGS -->
 
 <div class="section" id="feelings-section">
 
@@ -183,7 +177,11 @@ not who i was,
 not who i'm becoming yet.
 </p>
 
+<div id="fragments"></div>
+
 </div>
+
+<!-- MEMORY GAME -->
 
 <div class="section" id="memory-section">
 
@@ -202,25 +200,33 @@ not who i'm becoming yet.
 
 <button id="start-memory">start</button>
 
-<p id="secret"></p>
+<p id="memoryMessage"></p>
 
 </div>
+
+<!-- VIDEO -->
 
 <div id="video-section">
 
 <video id="teaser" controls>
+
 <source src="overexposedteaser.mov">
+
 </video>
 
 <div id="replay">again?</div>
 
+<p id="videoMessage"></p>
+
 </div>
 
-<p class="hidden-highlight">
-the light never turned off.
-</p>
-
 <script>
+
+/* state */
+
+let corruption=0
+let memoryWins=0
+let videoViews=0
 
 /* scatter folders */
 
@@ -262,15 +268,13 @@ file.addEventListener("pointerup",()=>drag=false)
 
 })
 
-/* section toggle */
+/* toggle sections */
 
 document.addEventListener("click",e=>{
 
 if(!e.target.classList.contains("file"))return
 
-if(e.target.id==="definition-file")toggle("definition-section")
-if(e.target.id==="feelings-file")toggle("feelings-section")
-if(e.target.id==="memory-file")toggle("memory-section")
+toggle(e.target.id.replace("-file","-section"))
 
 })
 
@@ -280,23 +284,111 @@ const s=document.getElementById(id)
 
 s.style.display=s.style.display==="block"?"none":"block"
 
+increaseCorruption()
+
 }
 
-/* video reveal */
+/* corruption */
+
+function increaseCorruption(){
+
+corruption++
+
+updateFragments()
+
+updateDefinition()
+
+if(corruption==6){
+
+spawnArchive()
+
+}
+
+}
+
+/* story fragments */
+
+const fragments=[
+
+"everything looked normal before the light.",
+
+"i tried to remember the moment exactly.",
+
+"the more i replay it, the less it feels real.",
+
+"maybe memories aren't meant to be studied.",
+
+"maybe i ruined it."
+
+]
+
+function updateFragments(){
+
+if(corruption<=fragments.length){
+
+const p=document.createElement("p")
+
+p.className="fragment"
+
+p.innerText=fragments[corruption-1]
+
+document.getElementById("fragments").appendChild(p)
+
+}
+
+}
+
+/* definition mutation */
+
+function updateDefinition(){
+
+const d=document.getElementById("definitionText")
+
+if(corruption>4){
+
+d.innerText="when something is exposed too long, the image disappears."
+
+}
+
+}
+
+/* archive folder */
+
+function spawnArchive(){
+
+const f=document.createElement("div")
+
+f.className="file"
+
+f.innerText="archive"
+
+f.id="archive-file"
+
+document.querySelector(".files-container").appendChild(f)
+
+scatter()
+
+f.onclick=()=>{
+
+alert("i wish i stopped looking at it.")
+
+}
+
+}
+
+/* video */
 
 const videoTrigger=document.getElementById("videoTrigger")
-const videoSection=document.getElementById("video-section")
+
 const video=document.getElementById("teaser")
+
+const videoSection=document.getElementById("video-section")
+
 const replay=document.getElementById("replay")
 
 videoTrigger.onclick=()=>{
 
 videoSection.style.display="block"
-
-window.scrollTo({
-top:document.body.scrollHeight,
-behavior:"smooth"
-})
 
 video.play()
 
@@ -304,37 +396,46 @@ video.play()
 
 video.onended=()=>{
 
+videoViews++
+
 replay.style.display="block"
+
+const msg=document.getElementById("videoMessage")
+
+if(videoViews==1){
+
+msg.innerText="you can watch it again."
+
+}
+
+if(videoViews==3){
+
+msg.innerText="it doesn't look the same anymore."
+
+}
+
+if(videoViews==5){
+
+msg.innerText="you changed it."
+
+}
 
 }
 
 replay.onclick=()=>{
 
 replay.style.display="none"
+
 video.currentTime=0
+
 video.play()
 
 }
 
-/* replay phrases */
-
-const phrases=[
-"again?",
-"watch again",
-"did you miss something",
-"too bright",
-"don't replay it"
-]
-
-setInterval(()=>{
-
-replay.innerText=phrases[Math.floor(Math.random()*phrases.length)]
-
-},5000)
-
 /* memory game */
 
 const tiles=[...document.querySelectorAll(".tile")]
+
 let sequence=[]
 let userIndex=0
 
@@ -347,8 +448,11 @@ const t=tiles[id]
 t.classList.add("active")
 
 setTimeout(()=>{
+
 t.classList.remove("active")
+
 res()
+
 },400)
 
 })
@@ -358,7 +462,9 @@ res()
 async function play(){
 
 for(let id of sequence){
+
 await flash(id)
+
 }
 
 }
@@ -366,10 +472,13 @@ await flash(id)
 document.getElementById("start-memory").onclick=()=>{
 
 sequence=[]
+
 userIndex=0
 
 for(let i=0;i<4;i++){
+
 sequence.push(Math.floor(Math.random()*4))
+
 }
 
 play()
@@ -388,14 +497,33 @@ userIndex++
 
 if(userIndex===sequence.length){
 
-document.getElementById("secret").innerText=
-"you remembered something you weren't supposed to."
+memoryWins++
+
+const m=document.getElementById("memoryMessage")
+
+if(memoryWins==1){
+
+m.innerText="good memory."
+
+}
+
+if(memoryWins==2){
+
+m.innerText="you remembered too much."
+
+}
+
+if(memoryWins>=3){
+
+m.innerText="stop trying to remember."
+
+}
 
 }
 
 }else{
 
-document.getElementById("secret").innerText="memory corrupted."
+document.getElementById("memoryMessage").innerText="memory corrupted."
 
 }
 
@@ -405,56 +533,19 @@ document.getElementById("secret").innerText="memory corrupted."
 
 /* slow overexposure */
 
-setTimeout(()=>{
+setInterval(()=>{
 
-document.body.style.background="#f7f7f7"
+document.body.style.background="rgb("+(255-corruption*3)+","+(255-corruption*3)+","+(255-corruption*3)+")"
 
-},60000)
+},5000)
 
-/* console secret */
+/* console */
 
 console.log("if you're reading this, you looked deeper than most people")
 
-/* random glitch */
-
-setInterval(()=>{
-
-const m=document.createElement("div")
-
-m.className="glitch"
-
-const texts=[
-"wait",
-"don't",
-"look away",
-"too bright"
-]
-
-m.innerText=texts[Math.floor(Math.random()*texts.length)]
-
-document.body.appendChild(m)
-
-setTimeout(()=>m.remove(),1200)
-
-},30000)
-
-/* visit secret */
-
-if(localStorage.getItem("visited")){
-
-alert("you came back.")
-
-}
-
-localStorage.setItem("visited",true)
-
-/* hidden track */
-
 function reveal(){
 
-const audio=new Audio("trustme.mp3")
-
-audio.play()
+new Audio("trustme.mp3").play()
 
 console.log("there was never enough light.")
 
@@ -462,16 +553,15 @@ console.log("there was never enough light.")
 
 window.reveal=reveal
 
-/* midnight secret */
+/* returning visitor */
 
-const hour=new Date().getHours()
+if(localStorage.getItem("visited")){
 
-if(hour>=0 && hour<=5){
-
-document.getElementById("subtitle").innerText=
-"the light shouldn't be on this late."
+console.log("you came back.")
 
 }
+
+localStorage.setItem("visited",true)
 
 </script>
 
